@@ -4,9 +4,9 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 
-	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 )
 
@@ -47,10 +47,6 @@ func getDBConfig() DBConfig {
 }
 
 func connectDB() (*sql.DB, error) {
-	if err := godotenv.Load("../.env"); err != nil {
-		log.Println("Aviso: Arquivo .env não encontrado, usando variáveis de ambiente do sistema")
-	}
-
 	// Obter configurações
 	config := getDBConfig()
 
@@ -109,6 +105,8 @@ func main() {
 	}
 	defer db.Close()
 
+	log.Println("Conexão com o banco de dados estabelecida com sucesso!")
+
 	// Obter todos os usuários
 	users, err := getAllUsers(db)
 	if err != nil {
@@ -118,5 +116,12 @@ func main() {
 	// Exibir os usuários
 	for _, user := range users {
 		fmt.Printf("ID: %s, Email: %s, Created At: %s\n", user.ID, user.Email, user.CreatedAt)
+	}
+
+	// Iniciar o servidor HTTP
+	port := getEnv("PORT", "8080")
+	log.Printf("Servidor iniciado na porta %s", port)
+	if err := http.ListenAndServe(":"+port, nil); err != nil {
+		log.Fatalf("Erro ao iniciar o servidor: %v", err)
 	}
 }
