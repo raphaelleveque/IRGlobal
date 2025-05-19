@@ -41,7 +41,7 @@ services:
       - DB_PORT=${DB_PORT}
       - DB_SSLMODE=${DB_SSLMODE}
     ports:
-      - "8080:8080"
+      - "8080:${BACKEND_PORT}"
     volumes:
       - ./backend:/app/src
     networks:
