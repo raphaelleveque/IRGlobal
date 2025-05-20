@@ -12,20 +12,27 @@ import (
 )
 
 func main() {
+	log.Printf("Starting IRGlobal backend server...")
+
 	cfg := config.LoadConfig()
+	log.Printf("Configuration loaded successfully")
+
 	db, err := database.Connect(cfg.DBHost, cfg.DBPort, cfg.DBUser, cfg.DBPassword, cfg.DBName, cfg.DBSSLMODE)
 	if err != nil {
-		log.Fatal("Conexãon com o banco de dados não concluída")
+		log.Fatal("Failed to connect to database: ", err)
 		return
 	}
 	defer db.Close()
 
 	appContainer := container.NewAppContainer(db)
+	log.Printf("Application container initialized")
+
 	router := router.SetupRoutes(appContainer.GetUserHandler())
+	log.Printf("Routes configured successfully")
 
 	serverAddr := ":" + cfg.Port
-	log.Printf("Servidor iniciado na porta %s", cfg.Port)
+	log.Printf("Server starting on port %s", cfg.Port)
 	if err := http.ListenAndServe(serverAddr, router); err != nil {
-		log.Fatalf("Erro ao iniciar o servidor: %v", err)
+		log.Fatalf("Server failed to start: %v", err)
 	}
 }
