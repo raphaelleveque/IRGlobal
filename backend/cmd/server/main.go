@@ -13,10 +13,10 @@ import (
 )
 
 func main() {
-	// Carregar configurações
+	// Carregar configurações do ambiente
 	cfg := config.LoadConfig()
 
-	// Conectar ao banco de dados
+	// Inicializar conexão com o banco de dados
 	db, err := database.Connect(cfg.DBHost, cfg.DBPort, cfg.DBUser, cfg.DBPassword, cfg.DBName, cfg.DBSSLMODE)
 	if err != nil {
 		log.Fatalf("Erro ao conectar ao banco de dados: %v", err)
@@ -24,14 +24,15 @@ func main() {
 	defer db.Close()
 
 	// Inicializar o container de dependências
-	container := container.NewContainer(db)
+	appContainer := container.NewAppContainer(db)
 
-	// Configurar rotas
-	router := router.SetupRoutes(container.UserHandler)
+	// Configurar rotas da aplicação
+	router := router.SetupRoutes(appContainer.GetUserHandler())
 
-	// Iniciar o servidor
+	// Iniciar o servidor HTTP
+	serverAddr := ":" + cfg.Port
 	log.Printf("Servidor iniciado na porta %s", cfg.Port)
-	if err := http.ListenAndServe(":"+cfg.Port, router); err != nil {
+	if err := http.ListenAndServe(serverAddr, router); err != nil {
 		log.Fatalf("Erro ao iniciar o servidor: %v", err)
 	}
 }
