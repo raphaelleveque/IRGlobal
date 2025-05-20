@@ -16,31 +16,30 @@ func NewUserRepository(db *sql.DB) domain.UserRepository {
 
 func (r *userRepository) Create(user *domain.User) error {
 	query := `
-		INSERT INTO users (id, email, password, name, created_at)
-		VALUES ($1, $2, $3, $4, $5)
+		INSERT INTO users (name, email, password)
+		VALUES ($1, $2, $3)
 	`
-	_, err := r.db.Exec(query, user.ID, user.Email, user.Password, user.Name, user.CreatedAt)
+	_, err := r.db.Exec(query, user.Name, user.Email, user.Password)
 	return err
 }
-
 func (r *userRepository) FindByEmail(email string) (*domain.User, error) {
+	query := `
+		SELECT * FROM users
+		WHERE email == $1
+	`
 	var user domain.User
-	query := `SELECT id, email, password, name, created_at FROM users WHERE email = $1`
-
 	err := r.db.QueryRow(query, email).Scan(
 		&user.ID,
+		&user.Name,
 		&user.Email,
 		&user.Password,
-		&user.Name,
 		&user.CreatedAt,
 	)
-
 	if err == sql.ErrNoRows {
 		return nil, nil
 	}
 	if err != nil {
 		return nil, err
 	}
-
 	return &user, nil
 }

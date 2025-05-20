@@ -28,7 +28,6 @@ func LoadConfig() Config {
 	}
 }
 
-// getEnv obtém o valor de uma variável de ambiente ou retorna um valor padrão
 func getEnv(key, fallback string) string {
 	if value, exists := os.LookupEnv(key); exists {
 		return value

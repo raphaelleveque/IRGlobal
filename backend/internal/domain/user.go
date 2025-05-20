@@ -1,12 +1,14 @@
 package domain
 
-import "time"
+import (
+	"time"
+)
 
 type User struct {
 	ID        string    `json:"id"`
+	Name      string    `json:"name"`
 	Email     string    `json:"email"`
 	Password  string    `json:"-"`
-	Name      string    `json:"name"`
 	CreatedAt time.Time `json:"created_at"`
 }
 
@@ -17,7 +19,4 @@ type UserRepository interface {
 
 type UserService interface {
 	Register(user *User) error
-	Login(email, password string) (*User, string, error)
-	GetAllUsers() ([]User, error)
-	VerifyToken(token string) error
 }
