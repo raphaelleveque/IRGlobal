@@ -2,7 +2,6 @@ package main
 
 import (
 	"log"
-	"net/http"
 
 	_ "github.com/lib/pq"
 	"github.com/raphaelleveque/IRGlobal/backend/internal/container"
@@ -32,7 +31,7 @@ func main() {
 
 	serverAddr := ":" + cfg.Port
 	log.Printf("Server starting on port %s", cfg.Port)
-	if err := http.ListenAndServe(serverAddr, router); err != nil {
+	if err := router.Run(serverAddr); err != nil {
 		log.Fatalf("Server failed to start: %v", err)
 	}
 }

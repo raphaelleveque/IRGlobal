@@ -1,17 +1,20 @@
 package router
 
 import (
-	"github.com/gorilla/mux"
+	"github.com/gin-gonic/gin"
 	"github.com/raphaelleveque/IRGlobal/backend/internal/user"
 )
 
-func SetupRoutes(userHandler *user.UserHandler) *mux.Router  {
-	router := mux.NewRouter()
+func SetupRoutes(userHandler *user.UserHandler) *gin.Engine {
+	router := gin.Default()
 
 	setupAuthRoutes(router, userHandler)
 	return router
 }
 
-func setupAuthRoutes(router *mux.Router, userHandler *user.UserHandler) {
-	router.HandleFunc("/auth/register", userHandler.Register).Methods("POST")
+func setupAuthRoutes(router *gin.Engine, userHandler *user.UserHandler) {
+	auth := router.Group("/auth")
+	{
+		auth.POST("/register", userHandler.Register)
+	}
 }
