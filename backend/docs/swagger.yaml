@@ -1,0 +1,79 @@
+basePath: /
+definitions:
+  domain.User:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+  user.RegisterRequest:
+    properties:
+      email:
+        example: joao@example.com
+        type: string
+      name:
+        example: João Silva
+        type: string
+      password:
+        example: senha123
+        minLength: 6
+        type: string
+    required:
+    - email
+    - name
+    - password
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: API para o sistema IRGlobal
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: IRGlobal API
+  version: "1.0"
+paths:
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Registra um novo usuário no sistema
+      parameters:
+      - description: Dados do usuário
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/user.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/domain.User'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Registrar um novo usuário
+      tags:
+      - auth
+swagger: "2.0"

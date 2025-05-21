@@ -25,7 +25,7 @@ func (r *userRepository) Create(user *domain.User) error {
 func (r *userRepository) FindByEmail(email string) (*domain.User, error) {
 	query := `
 		SELECT * FROM users
-		WHERE email == $1
+		WHERE email = $1
 	`
 	var user domain.User
 	err := r.db.QueryRow(query, email).Scan(

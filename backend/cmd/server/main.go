@@ -4,11 +4,18 @@ import (
 	"log"
 
 	_ "github.com/lib/pq"
+	_ "github.com/raphaelleveque/IRGlobal/backend/docs" // Importação para o Swagger
 	"github.com/raphaelleveque/IRGlobal/backend/internal/container"
 	"github.com/raphaelleveque/IRGlobal/backend/internal/database"
 	"github.com/raphaelleveque/IRGlobal/backend/internal/router"
 	"github.com/raphaelleveque/IRGlobal/backend/pkg/config"
 )
+
+// @title           IRGlobal API
+// @version         1.0
+// @description     API para o sistema IRGlobal
+// @host      localhost:8080
+// @BasePath  /
 
 func main() {
 	log.Printf("Starting IRGlobal backend server...")
