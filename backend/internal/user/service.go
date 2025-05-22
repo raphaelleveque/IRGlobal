@@ -15,21 +15,30 @@ func NewUserService(repo domain.UserRepository) domain.UserService {
 	return &userService{repo: repo}
 }
 
-func (s *userService) Register(user *domain.User) error {
+func (s *userService) Register(user *domain.User) (*domain.User, error) {
 	existingUser, err := s.repo.FindByEmail(user.Email)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if existingUser != nil {
-		return errors.New("email already exists")
+		return nil, errors.New("email already exists")
 	}
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	user.Password = string(hashedPassword)
 
 	return s.repo.Create(user)
+}
+
+func (s *userService) GetByID(id string) (*domain.User, error) {
+	existingUser, err := s.repo.FindByID(id)
+	if err != nil {
+		return nil, err
+	}
+
+	return existingUser, nil
 }

@@ -30,10 +30,12 @@ func main() {
 	}
 	defer db.Close()
 
-	appContainer := container.NewAppContainer(db)
+	secretKey := []byte(cfg.JWT_Secret)
+
+	appContainer := container.NewAppContainer(db, secretKey)
 	log.Printf("Application container initialized")
 
-	router := router.SetupRoutes(appContainer.GetUserHandler())
+	router := router.SetupRoutes(appContainer.GetAuthHandler(), appContainer.GetUserHandler())
 	log.Printf("Routes configured successfully")
 
 	serverAddr := ":" + cfg.Port

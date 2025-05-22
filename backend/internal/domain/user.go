@@ -13,10 +13,13 @@ type User struct {
 }
 
 type UserRepository interface {
-	Create(user *User) error
+	Create(user *User) (*User, error)
 	FindByEmail(email string) (*User, error)
+	FindByID(id string) (*User, error)
+
 }
 
 type UserService interface {
-	Register(user *User) error
+	Register(user *User) (*User, error)
+	GetByID(id string) (*User, error)
 }
