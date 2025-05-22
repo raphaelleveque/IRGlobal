@@ -28,7 +28,6 @@ func setupAuthRoutes(router *gin.Engine, authHandler *auth.AuthHandler) {
 	auth := router.Group("/auth")
 	{
 		auth.POST("/register", authHandler.Register)
-		// Outras rotas de autenticação serão adicionadas posteriormente
-		// Exemplo: auth.POST("/login", authHandler.Login)
+		auth.POST("/login", authHandler.Login)
 	}
 }

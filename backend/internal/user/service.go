@@ -42,3 +42,12 @@ func (s *userService) GetByID(id string) (*domain.User, error) {
 
 	return existingUser, nil
 }
+
+func (s *userService) GetByEmail(email string) (*domain.User, error) {
+	existingUser, err := s.repo.FindByEmail(email)
+	if err != nil {
+		return nil, err
+	}
+
+	return existingUser, nil
+}

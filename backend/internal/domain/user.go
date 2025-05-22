@@ -22,4 +22,5 @@ type UserRepository interface {
 type UserService interface {
 	Register(user *User) (*User, error)
 	GetByID(id string) (*User, error)
+	GetByEmail(email string) (*User, error)
 }
