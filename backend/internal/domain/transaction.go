@@ -36,8 +36,12 @@ type Transaction struct {
 
 type TransactionService interface {
 	AddTransaction(transaction *Transaction) (*Transaction, error)
+	DeleteTransaction(id string) (*Transaction, error)
+	FindByID(id string) (*Transaction, error)
 }
 
 type TransactionRepository interface {
 	Create(transaction *Transaction) (*Transaction, error)
+	Delete(id string) (*Transaction, error)
+	FindByID(id string) (*Transaction, error)
 }

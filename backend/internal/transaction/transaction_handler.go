@@ -21,6 +21,10 @@ type AddTransactionRequest struct {
 	OperationDate string               `json:"operation_date" binding:"required"`                    // Data da operação
 }
 
+type DeleteTransactionRequest struct {
+	ID string `json:"id" binding:"required" example:"d081b7c0-b3b6-49ba-a9b7-86b56a65fb89"`
+}
+
 func NewTransactionHandler(transactionService domain.TransactionService) *TransactionHandler {
 	return &TransactionHandler{transactionService: transactionService}
 }
@@ -74,6 +78,42 @@ func (h *TransactionHandler) AddTransaction(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, gin.H{
+		"transaction": transaction,
+	})
+}
+
+// Register godoc
+// @Summary      Deletes a Transaction
+// @Description  Deletes a Transaction from the system
+// @Tags         transaction
+// @Accept       json
+// @Produce      json
+// @Param        Authorization header string true "Authentication Token"
+// @Param        request body DeleteTransactionRequest true "Transaction details"
+// @Success      200  {object}  domain.Transaction  "Transaction successfully deleted"
+// @Failure      404  {object}  map[string]string    "Transaction not found"
+// @Failure      500  {object}  map[string]string    "Internal server error"
+// @Router       /transaction/delete [delete]
+// @Security     ApiKeyAuth
+func (h *TransactionHandler) DeleteTransaction(c *gin.Context) {
+	var req DeleteTransactionRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	if _, err := h.transactionService.FindByID(req.ID); err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "id not found"})
+		return
+	}
+
+	transaction, err := h.transactionService.DeleteTransaction(req.ID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
 		"transaction": transaction,
 	})
 }

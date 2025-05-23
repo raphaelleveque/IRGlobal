@@ -35,3 +35,16 @@ func (s *transactionService) setTotalCost(transaction *domain.Transaction) {
 	transaction.TotalCostUSD = transaction.PriceInUSD * transaction.Quantity
 	transaction.TotalCostBRL = transaction.PriceInBRL * transaction.Quantity
 }
+
+func (s *transactionService) DeleteTransaction(id string) (*domain.Transaction, error) {
+	transaction, err := s.repo.Delete(id)
+	return transaction, err
+}
+
+func (s *transactionService) FindByID(id string) (*domain.Transaction, error) {
+	transaction, err := s.repo.FindByID(id)
+	if err != nil {
+		return nil, err
+	}
+	return transaction, nil
+}

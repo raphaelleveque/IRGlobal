@@ -201,6 +201,70 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/transaction/delete": {
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Deletes a Transaction from the system",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "transaction"
+                ],
+                "summary": "Deletes a Transaction",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authentication Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Transaction details",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/transaction.DeleteTransactionRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Transaction successfully deleted",
+                        "schema": {
+                            "$ref": "#/definitions/domain.Transaction"
+                        }
+                    },
+                    "404": {
+                        "description": "Transaction not found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -308,6 +372,14 @@ const docTemplate = `{
                     "description": "Quantidade",
                     "type": "number"
                 },
+                "total_cost_brl": {
+                    "description": "Custo total em USD",
+                    "type": "number"
+                },
+                "total_cost_usd": {
+                    "description": "Custo total em USD",
+                    "type": "number"
+                },
                 "type": {
                     "description": "Tipo de operação",
                     "allOf": [
@@ -397,6 +469,18 @@ const docTemplate = `{
                             "$ref": "#/definitions/domain.OperationType"
                         }
                     ]
+                }
+            }
+        },
+        "transaction.DeleteTransactionRequest": {
+            "type": "object",
+            "required": [
+                "id"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "example": "ss1dofn-oqin3vdkf-alds8foi"
                 }
             }
         }

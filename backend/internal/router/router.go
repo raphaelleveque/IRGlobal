@@ -42,5 +42,6 @@ func setupProtectedRoutes(router *gin.Engine, appContainer *container.AppContain
 	transaction := protected.Group("/transaction")
 	{
 		transaction.POST("/add", appContainer.GetTransactionHandler().AddTransaction)
+		transaction.DELETE("/delete", appContainer.GetTransactionHandler().DeleteTransaction)
 	}
 }
