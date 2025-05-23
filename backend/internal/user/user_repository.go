@@ -48,9 +48,6 @@ func (r *userRepository) FindByEmail(email string) (*domain.User, error) {
 		&user.Password,
 		&user.CreatedAt,
 	)
-	if err == sql.ErrNoRows {
-		return nil, nil
-	}
 	if err != nil {
 		return nil, err
 	}
