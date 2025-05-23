@@ -27,6 +27,8 @@ type Transaction struct {
 	PriceInUSD    float64       `json:"price_in_usd"`   // Preço em USD
 	USDBRLRate    float64       `json:"usd_brl_rate"`   // Taxa de câmbio USD/BRL
 	PriceInBRL    float64       `json:"price_in_brl"`   // Preço em BRL
+	TotalCostUSD  float64       `json:"total_cost_usd"` // Custo total em USD
+	TotalCostBRL  float64       `json:"total_cost_brl"` // Custo total em USD
 	Type          OperationType `json:"type"`           // Tipo de operação
 	OperationDate time.Time     `json:"operation_date"` // Data da operação
 	CreatedAt     time.Time     `json:"created_at"`     // Data de criação

@@ -25,6 +25,8 @@ CREATE TABLE IF NOT EXISTS transactions (
     price_in_usd DECIMAL(18, 8) NOT NULL,
     usd_brl_rate DECIMAL(10, 4) NOT NULL,
     price_in_brl DECIMAL(18, 2) NOT NULL,
+    total_cost_usd DECIMAL(18, 2) NOT NULL,
+    total_cost_brl DECIMAL(18, 2) NOT NULL,
     type operation_type NOT NULL,
     operation_date DATE NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
