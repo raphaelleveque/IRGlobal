@@ -30,6 +30,62 @@ definitions:
     - name
     - password
     type: object
+  domain.AssetType:
+    enum:
+    - CRYPTO
+    - STOCK
+    - ETF
+    type: string
+    x-enum-varnames:
+    - Crypto
+    - Stock
+    - ETF
+  domain.OperationType:
+    enum:
+    - BUY
+    - SELL
+    type: string
+    x-enum-varnames:
+    - Buy
+    - Sell
+  domain.Transaction:
+    properties:
+      asset_symbol:
+        description: Símbolo do ativo
+        type: string
+      asset_type:
+        allOf:
+        - $ref: '#/definitions/domain.AssetType'
+        description: Tipo de ativo
+      created_at:
+        description: Data de criação
+        type: string
+      id:
+        description: UUID
+        type: string
+      operation_date:
+        description: Data da operação
+        type: string
+      price_in_brl:
+        description: Preço em BRL
+        type: number
+      price_in_usd:
+        description: Preço em USD
+        type: number
+      quantity:
+        description: Quantidade
+        type: number
+      type:
+        allOf:
+        - $ref: '#/definitions/domain.OperationType'
+        description: Tipo de operação
+      usd_brl_rate:
+        description: Taxa de câmbio USD/BRL
+        type: number
+      user_id:
+        description: UUID do usuário
+        type: string
+    type: object
   domain.User:
     properties:
       created_at:
@@ -40,6 +96,46 @@ definitions:
         type: string
       name:
         type: string
+    type: object
+  transaction.AddTransactionRequest:
+    properties:
+      asset_symbol:
+        description: Símbolo do ativo
+        example: AAPL
+        type: string
+      asset_type:
+        allOf:
+        - $ref: '#/definitions/domain.AssetType'
+        description: Tipo de ativo
+        enum:
+        - CRYPTO
+        - STOCK
+        - ETF
+      operation_date:
+        description: Data da operação
+        type: string
+      price_in_usd:
+        description: Preço em USD
+        minimum: 0
+        type: number
+      quantity:
+        description: Quantidade
+        minimum: 0
+        type: number
+      type:
+        allOf:
+        - $ref: '#/definitions/domain.OperationType'
+        description: Tipo de operação
+        enum:
+        - BUY
+        - SELL
+    required:
+    - asset_symbol
+    - asset_type
+    - operation_date
+    - price_in_usd
+    - quantity
+    - type
     type: object
 host: localhost:8080
 info:
@@ -129,4 +225,45 @@ paths:
       summary: Registrar um novo usuário
       tags:
       - auth
+  /transaction/add:
+    post:
+      consumes:
+      - application/json
+      description: Adiciona uma nova Transação ao sistema
+      parameters:
+      - description: Token de autenticação
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Dados da transação
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/transaction.AddTransactionRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Transação criada com sucesso
+          schema:
+            $ref: '#/definitions/domain.Transaction'
+        "400":
+          description: Dados inválidos
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Erro interno do servidor
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Adiciona uma nova Transação
+      tags:
+      - transaction
 swagger: "2.0"

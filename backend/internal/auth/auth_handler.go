@@ -27,10 +27,6 @@ func NewAuthHandler(userService domain.UserService, authService domain.AuthServi
 	return &AuthHandler{userService: userService, authService: authService}
 }
 
-// GetAuthService retorna o serviço de autenticação
-func (h *AuthHandler) GetAuthService() domain.AuthService {
-	return h.authService
-}
 
 // Register godoc
 // @Summary      Registrar um novo usuário

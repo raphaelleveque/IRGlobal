@@ -35,7 +35,7 @@ func main() {
 	appContainer := container.NewAppContainer(db, secretKey)
 	log.Printf("Application container initialized")
 
-	router := router.SetupRoutes(appContainer.GetAuthHandler(), appContainer.GetUserHandler())
+	router := router.SetupRoutes(appContainer)
 	log.Printf("Routes configured successfully")
 
 	serverAddr := ":" + cfg.Port

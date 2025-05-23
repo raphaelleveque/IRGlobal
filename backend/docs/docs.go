@@ -137,6 +137,70 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/transaction/add": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Adiciona uma nova Transação ao sistema",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "transaction"
+                ],
+                "summary": "Adiciona uma nova Transação",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token de autenticação",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Dados da transação",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/transaction.AddTransactionRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Transação criada com sucesso",
+                        "schema": {
+                            "$ref": "#/definitions/domain.Transaction"
+                        }
+                    },
+                    "400": {
+                        "description": "Dados inválidos",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -181,6 +245,87 @@ const docTemplate = `{
                 }
             }
         },
+        "domain.AssetType": {
+            "type": "string",
+            "enum": [
+                "CRYPTO",
+                "STOCK",
+                "ETF"
+            ],
+            "x-enum-varnames": [
+                "Crypto",
+                "Stock",
+                "ETF"
+            ]
+        },
+        "domain.OperationType": {
+            "type": "string",
+            "enum": [
+                "BUY",
+                "SELL"
+            ],
+            "x-enum-varnames": [
+                "Buy",
+                "Sell"
+            ]
+        },
+        "domain.Transaction": {
+            "type": "object",
+            "properties": {
+                "asset_symbol": {
+                    "description": "Símbolo do ativo",
+                    "type": "string"
+                },
+                "asset_type": {
+                    "description": "Tipo de ativo",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/domain.AssetType"
+                        }
+                    ]
+                },
+                "created_at": {
+                    "description": "Data de criação",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "UUID",
+                    "type": "string"
+                },
+                "operation_date": {
+                    "description": "Data da operação",
+                    "type": "string"
+                },
+                "price_in_brl": {
+                    "description": "Preço em BRL",
+                    "type": "number"
+                },
+                "price_in_usd": {
+                    "description": "Preço em USD",
+                    "type": "number"
+                },
+                "quantity": {
+                    "description": "Quantidade",
+                    "type": "number"
+                },
+                "type": {
+                    "description": "Tipo de operação",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/domain.OperationType"
+                        }
+                    ]
+                },
+                "usd_brl_rate": {
+                    "description": "Taxa de câmbio USD/BRL",
+                    "type": "number"
+                },
+                "user_id": {
+                    "description": "UUID do usuário",
+                    "type": "string"
+                }
+            }
+        },
         "domain.User": {
             "type": "object",
             "properties": {
@@ -195,6 +340,63 @@ const docTemplate = `{
                 },
                 "name": {
                     "type": "string"
+                }
+            }
+        },
+        "transaction.AddTransactionRequest": {
+            "type": "object",
+            "required": [
+                "asset_symbol",
+                "asset_type",
+                "operation_date",
+                "price_in_usd",
+                "quantity",
+                "type"
+            ],
+            "properties": {
+                "asset_symbol": {
+                    "description": "Símbolo do ativo",
+                    "type": "string",
+                    "example": "AAPL"
+                },
+                "asset_type": {
+                    "description": "Tipo de ativo",
+                    "enum": [
+                        "CRYPTO",
+                        "STOCK",
+                        "ETF"
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/domain.AssetType"
+                        }
+                    ]
+                },
+                "operation_date": {
+                    "description": "Data da operação",
+                    "type": "string"
+                },
+                "price_in_usd": {
+                    "description": "Preço em USD",
+                    "type": "number",
+                    "minimum": 0
+                },
+                "quantity": {
+                    "description": "Quantidade",
+                    "type": "number",
+                    "minimum": 0
+                },
+                "type": {
+                    "description": "Tipo de operação",
+                    "enum": [
+                        "BUY",
+                        "SELL"
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/domain.OperationType"
+                        }
+                    ]
                 }
             }
         }
