@@ -17,9 +17,11 @@ type Position struct {
 
 type PositionService interface {
 	CalculatePosition(transaction *Transaction) (*Position, error)
+	RecalculatePosition(userId, symbol string) (*Position, error)
 }
 
 type PositionRepository interface {
 	UpdatePosition(position *Position) (*Position, error)
 	GetPositionByAssetSymbol(user_id, symbol string) (*Position, error)
+	DeletePosition(userId, symbol string) (*Position, error)
 }

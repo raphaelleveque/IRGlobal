@@ -26,16 +26,6 @@ func (s *transactionService) AddTransaction(transaction *domain.Transaction) (*d
 	return transaction, err
 }
 
-func (s *transactionService) setBRLPrice(transaction *domain.Transaction, usdbrlRate float64) {
-	transaction.USDBRLRate = usdbrlRate
-	transaction.PriceInBRL = transaction.PriceInUSD * transaction.USDBRLRate
-}
-
-func (s *transactionService) setTotalCost(transaction *domain.Transaction) {
-	transaction.TotalCostUSD = transaction.PriceInUSD * transaction.Quantity
-	transaction.TotalCostBRL = transaction.PriceInBRL * transaction.Quantity
-}
-
 func (s *transactionService) DeleteTransaction(id string) (*domain.Transaction, error) {
 	transaction, err := s.repo.Delete(id)
 	return transaction, err
@@ -47,4 +37,18 @@ func (s *transactionService) FindByID(id string) (*domain.Transaction, error) {
 		return nil, err
 	}
 	return transaction, nil
+}
+
+func (s *transactionService) FindAllBySymbol(userId, symbol string) ([]domain.Transaction, error) {
+	return s.repo.FindAllBySymbol(userId, symbol)
+}
+
+func (s *transactionService) setBRLPrice(transaction *domain.Transaction, usdbrlRate float64) {
+	transaction.USDBRLRate = usdbrlRate
+	transaction.PriceInBRL = transaction.PriceInUSD * transaction.USDBRLRate
+}
+
+func (s *transactionService) setTotalCost(transaction *domain.Transaction) {
+	transaction.TotalCostUSD = transaction.PriceInUSD * transaction.Quantity
+	transaction.TotalCostBRL = transaction.PriceInBRL * transaction.Quantity
 }

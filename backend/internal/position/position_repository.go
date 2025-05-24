@@ -65,3 +65,27 @@ func (r *positionRepository) UpdatePosition(position *domain.Position) (*domain.
 
 	return position, err
 }
+
+func (r *positionRepository) DeletePosition(userId, symbol string) (*domain.Position, error) {
+	query := `
+		DELETE FROM positions
+		WHERE user_id = $1 AND asset_symbol = $2
+		RETURNING id, user_id, asset_symbol, asset_type, quantity, average_cost_usd, average_cost_brl, total_cost_usd, total_cost_brl, created_at
+	`
+
+	var position domain.Position
+	err := r.db.QueryRow(query, userId, symbol).Scan(
+		&position.ID,
+		&position.UserID,
+		&position.AssetSymbol,
+		&position.AssetType,
+		&position.Quantity,
+		&position.AverageCostUSD,
+		&position.AverageCostBRL,
+		&position.TotalCostUSD,
+		&position.TotalCostBRL,
+		&position.CreatedAt,
+	)
+
+	return &position, err
+}

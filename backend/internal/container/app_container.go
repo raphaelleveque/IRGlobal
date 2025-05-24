@@ -34,7 +34,7 @@ func NewAppContainer(db *sql.DB, secretKey []byte) *AppContainer {
 	authService := auth.NewAuthService(secretKey, userService)
 	currencyService := currency.NewCurrencyService()
 	transactionService := transaction.NewTransactionService(transactionRepo, currencyService) // Será necessário quando criar
-	positionService := position.NewPositionService(positionRepo)
+	positionService := position.NewPositionService(positionRepo, transactionService)
 
 	// Handlers
 	userHandler := user.NewUserHandler(userService)

@@ -8,10 +8,11 @@ import (
 
 type positionService struct {
 	repo domain.PositionRepository
+	transactionService domain.TransactionService
 }
 
-func NewPositionService(repo domain.PositionRepository) domain.PositionService {
-	return &positionService{repo: repo}
+func NewPositionService(repo domain.PositionRepository, transactionService domain.TransactionService) domain.PositionService {
+	return &positionService{repo: repo, transactionService: transactionService}
 }
 
 
@@ -39,6 +40,26 @@ func (s *positionService) CalculatePosition(transaction *domain.Transaction) (*d
 	position, err = s.repo.UpdatePosition(position)
 	if err != nil {
 		return nil, err
+	}
+	return position, nil
+}
+
+func (s *positionService) RecalculatePosition(userId, symbol string) (*domain.Position, error) {
+	transactions, err := s.transactionService.FindAllBySymbol(userId, symbol)
+	if err != nil {
+		return nil, err
+	}
+	_, err = s.repo.DeletePosition(userId, symbol)
+	if err != nil{
+		return nil, err
+	}
+
+	var position *domain.Position
+	for _, transaction := range transactions {
+		position, err = s.CalculatePosition(&transaction)
+		if err != nil {
+			return nil, err
+		}
 	}
 	return position, nil
 }
