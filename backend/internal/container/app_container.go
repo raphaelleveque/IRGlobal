@@ -6,7 +6,6 @@ import (
 	"github.com/raphaelleveque/IRGlobal/backend/internal/auth"
 	"github.com/raphaelleveque/IRGlobal/backend/internal/currency"
 	"github.com/raphaelleveque/IRGlobal/backend/internal/domain"
-	"github.com/raphaelleveque/IRGlobal/backend/internal/infrastructure"
 	"github.com/raphaelleveque/IRGlobal/backend/internal/position"
 	"github.com/raphaelleveque/IRGlobal/backend/internal/transaction"
 	"github.com/raphaelleveque/IRGlobal/backend/internal/user"
@@ -23,6 +22,7 @@ type AppContainer struct {
 	currencyService    domain.CurrencyService
 	positionService    domain.PositionService
 	positionHandler    *position.PositionHandler
+	coordinator        domain.TransactionCoordinatorService
 }
 
 func NewAppContainer(db *sql.DB, secretKey []byte) *AppContainer {
@@ -31,27 +31,22 @@ func NewAppContainer(db *sql.DB, secretKey []byte) *AppContainer {
 	transactionRepo := transaction.NewTransactionRepository(db)
 	positionRepo := position.NewPositionRepository(db)
 
-	// Services
+	// Services - sem dependência de banco de dados
 	userService := user.NewUserService(userRepo)
 	authService := auth.NewAuthService(secretKey, userService)
 	currencyService := currency.NewCurrencyService()
 
-	// Criar positionService primeiro sem transactionService
-	positionService := position.NewPositionService(positionRepo, nil)
-	// Depois criar transactionService com positionService
-	transactionService := transaction.NewTransactionService(transactionRepo, currencyService, positionService)
-	// Atualizar positionService com transactionService
-	positionService = position.NewPositionService(positionRepo, transactionService)
+	// Services de domínio - apenas dependências de outros services e repositories
+	transactionService := transaction.NewTransactionService(transactionRepo, currencyService)
+	positionService := position.NewPositionService(positionRepo, transactionService)
 
-	// UnitOfWork factory
-	uowFactory := func() domain.UnitOfWork {
-		return infrastructure.NewUnitOfWork(db)
-	}
+	// Coordinator que gerencia transações e posições - usa os services para lógica de negócio
+	coordinator := transaction.NewTransactionCoordinator(db, transactionService, positionService, currencyService)
 
 	// Handlers
 	userHandler := user.NewUserHandler(userService)
 	authHandler := auth.NewAuthHandler(userService, authService)
-	transactionHandler := transaction.NewTransactionHandler(transactionService, uowFactory)
+	transactionHandler := transaction.NewTransactionHandler(coordinator)
 	positionHandler := position.NewPositionHandler(positionService)
 
 	return &AppContainer{
@@ -65,6 +60,7 @@ func NewAppContainer(db *sql.DB, secretKey []byte) *AppContainer {
 		currencyService:    currencyService,
 		positionService:    positionService,
 		positionHandler:    positionHandler,
+		coordinator:        coordinator,
 	}
 }
 

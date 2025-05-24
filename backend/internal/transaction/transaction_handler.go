@@ -9,8 +9,7 @@ import (
 )
 
 type TransactionHandler struct {
-	transactionService domain.TransactionService
-	uowFactory         func() domain.UnitOfWork
+	coordinator domain.TransactionCoordinatorService
 }
 
 type AddTransactionRequest struct {
@@ -26,10 +25,9 @@ type DeleteTransactionRequest struct {
 	ID string `json:"id" binding:"required" example:"d081b7c0-b3b6-49ba-a9b7-86b56a65fb89"`
 }
 
-func NewTransactionHandler(transactionService domain.TransactionService, uowFactory func() domain.UnitOfWork) *TransactionHandler {
+func NewTransactionHandler(coordinator domain.TransactionCoordinatorService) *TransactionHandler {
 	return &TransactionHandler{
-		transactionService: transactionService,
-		uowFactory:         uowFactory,
+		coordinator: coordinator,
 	}
 }
 
@@ -75,9 +73,8 @@ func (h *TransactionHandler) AddTransaction(c *gin.Context) {
 		OperationDate: operationDate,
 	}
 
-	// Usar o método transacional do TransactionService
-	uow := h.uowFactory()
-	createdTransaction, position, err := h.transactionService.AddTransactionWithPosition(transaction, uow)
+	// Usar o coordenador para gerenciar transação e posição
+	createdTransaction, position, err := h.coordinator.AddTransactionWithPosition(transaction)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -109,9 +106,8 @@ func (h *TransactionHandler) DeleteTransaction(c *gin.Context) {
 		return
 	}
 
-	// Usar o método transacional do TransactionService
-	uow := h.uowFactory()
-	deletedTransaction, position, err := h.transactionService.DeleteTransactionWithPosition(req.ID, uow)
+	// Usar o coordenador para gerenciar transação e posição
+	deletedTransaction, position, err := h.coordinator.DeleteTransactionWithPosition(req.ID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

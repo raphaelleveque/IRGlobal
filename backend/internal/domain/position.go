@@ -18,6 +18,10 @@ type Position struct {
 type PositionService interface {
 	CalculatePosition(transaction *Transaction) (*Position, error)
 	RecalculatePosition(userId, symbol string) (*Position, error)
+	// Métodos para uso com repositories específicos (transações)
+	CalculatePositionWithRepo(transaction *Transaction, positionRepo PositionRepository) (*Position, error)
+	RecalculatePositionWithRepo(userId, symbol string, positionRepo PositionRepository, transactionRepo TransactionRepository) (*Position, error)
+	ValidateTransaction(transaction *Transaction, positionRepo PositionRepository) error
 }
 
 type PositionRepository interface {

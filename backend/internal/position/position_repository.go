@@ -20,10 +20,6 @@ func NewPositionRepository(db *sql.DB) domain.PositionRepository {
 	return &positionRepository{db: db}
 }
 
-func NewPositionRepositoryWithTx(tx *sql.Tx) domain.PositionRepository {
-	return &positionRepository{db: tx}
-}
-
 func (r *positionRepository) GetPositionByAssetSymbol(user_id, symbol string) (*domain.Position, error) {
 	query := `
 		SELECT id, user_id, asset_symbol, asset_type, quantity, average_cost_usd, average_cost_brl, total_cost_usd, total_cost_brl, created_at

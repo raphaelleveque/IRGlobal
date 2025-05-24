@@ -39,9 +39,8 @@ type TransactionService interface {
 	DeleteTransaction(id string) (*Transaction, error)
 	FindByID(id string) (*Transaction, error)
 	FindAllBySymbol(userId, symbol string) ([]Transaction, error)
-	// Métodos transacionais
-	AddTransactionWithPosition(transaction *Transaction, uow UnitOfWork) (*Transaction, *Position, error)
-	DeleteTransactionWithPosition(id string, uow UnitOfWork) (*Transaction, *Position, error)
+	// Método para preparar transação (cálculos de preço e câmbio)
+	PrepareTransaction(transaction *Transaction) error
 }
 
 type TransactionRepository interface {
@@ -49,4 +48,9 @@ type TransactionRepository interface {
 	Delete(id string) (*Transaction, error)
 	FindByID(id string) (*Transaction, error)
 	FindAllBySymbol(userId, symbol string) ([]Transaction, error)
+}
+
+type TransactionCoordinatorService interface {
+	AddTransactionWithPosition(transaction *Transaction) (*Transaction, *Position, error)
+	DeleteTransactionWithPosition(id string) (*Transaction, *Position, error)
 }
