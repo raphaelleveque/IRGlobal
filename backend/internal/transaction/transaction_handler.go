@@ -10,7 +10,7 @@ import (
 
 type TransactionHandler struct {
 	transactionService domain.TransactionService
-	positionService domain.PositionService
+	uowFactory         func() domain.UnitOfWork
 }
 
 type AddTransactionRequest struct {
@@ -26,8 +26,11 @@ type DeleteTransactionRequest struct {
 	ID string `json:"id" binding:"required" example:"d081b7c0-b3b6-49ba-a9b7-86b56a65fb89"`
 }
 
-func NewTransactionHandler(transactionService domain.TransactionService, positionService domain.PositionService) *TransactionHandler {
-	return &TransactionHandler{transactionService: transactionService, positionService: positionService}
+func NewTransactionHandler(transactionService domain.TransactionService, uowFactory func() domain.UnitOfWork) *TransactionHandler {
+	return &TransactionHandler{
+		transactionService: transactionService,
+		uowFactory:         uowFactory,
+	}
 }
 
 // Register godoc
@@ -72,21 +75,17 @@ func (h *TransactionHandler) AddTransaction(c *gin.Context) {
 		OperationDate: operationDate,
 	}
 
-	transaction, err = h.transactionService.AddTransaction(transaction)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	position, err := h.positionService.CalculatePosition(transaction)
+	// Usar o método transacional do TransactionService
+	uow := h.uowFactory()
+	createdTransaction, position, err := h.transactionService.AddTransactionWithPosition(transaction, uow)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
 	c.JSON(http.StatusCreated, gin.H{
-		"transaction": transaction,
-		"position": position,
+		"transaction": createdTransaction,
+		"position":    position,
 	})
 }
 
@@ -110,31 +109,16 @@ func (h *TransactionHandler) DeleteTransaction(c *gin.Context) {
 		return
 	}
 
-	if _, err := h.transactionService.FindByID(req.ID); err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "id not found"})
-		return
-	}
-
-	transaction, err := h.transactionService.DeleteTransaction(req.ID)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, err.Error())
-		return
-	}
-
-	user, exists := c.Get("user")
-	if !exists {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
-		return
-	}
-
-	position, err := h.positionService.RecalculatePosition(user.(*domain.User).ID, transaction.AssetSymbol)
+	// Usar o método transacional do TransactionService
+	uow := h.uowFactory()
+	deletedTransaction, position, err := h.transactionService.DeleteTransactionWithPosition(req.ID, uow)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"transaction": transaction,
-		"position": position,
+		"transaction": deletedTransaction,
+		"position":    position,
 	})
 }

@@ -7,14 +7,13 @@ import (
 )
 
 type positionService struct {
-	repo domain.PositionRepository
+	repo               domain.PositionRepository
 	transactionService domain.TransactionService
 }
 
 func NewPositionService(repo domain.PositionRepository, transactionService domain.TransactionService) domain.PositionService {
 	return &positionService{repo: repo, transactionService: transactionService}
 }
-
 
 func (s *positionService) CalculatePosition(transaction *domain.Transaction) (*domain.Position, error) {
 	position, err := s.repo.GetPositionByAssetSymbol(transaction.UserID, transaction.AssetSymbol)
@@ -23,9 +22,9 @@ func (s *positionService) CalculatePosition(transaction *domain.Transaction) (*d
 	}
 	if position == nil {
 		position = &domain.Position{
-			UserID: transaction.UserID,
+			UserID:      transaction.UserID,
 			AssetSymbol: transaction.AssetSymbol,
-			AssetType: transaction.AssetType,
+			AssetType:   transaction.AssetType,
 		}
 	}
 
@@ -50,7 +49,7 @@ func (s *positionService) RecalculatePosition(userId, symbol string) (*domain.Po
 		return nil, err
 	}
 	_, err = s.repo.DeletePosition(userId, symbol)
-	if err != nil{
+	if err != nil {
 		return nil, err
 	}
 

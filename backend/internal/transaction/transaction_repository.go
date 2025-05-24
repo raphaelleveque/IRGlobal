@@ -6,12 +6,22 @@ import (
 	"github.com/raphaelleveque/IRGlobal/backend/internal/domain"
 )
 
+// Interface para abstrair *sql.DB e *sql.Tx
+type dbExecutor interface {
+	Query(query string, args ...interface{}) (*sql.Rows, error)
+	QueryRow(query string, args ...interface{}) *sql.Row
+}
+
 type transactionRepository struct {
-	db *sql.DB
+	db dbExecutor
 }
 
 func NewTransactionRepository(db *sql.DB) domain.TransactionRepository {
 	return &transactionRepository{db: db}
+}
+
+func NewTransactionRepositoryWithTx(tx *sql.Tx) domain.TransactionRepository {
+	return &transactionRepository{db: tx}
 }
 
 func (r *transactionRepository) Create(transaction *domain.Transaction) (*domain.Transaction, error) {

@@ -6,12 +6,22 @@ import (
 	"github.com/raphaelleveque/IRGlobal/backend/internal/domain"
 )
 
+// Interface para abstrair *sql.DB e *sql.Tx
+type dbExecutor interface {
+	Query(query string, args ...interface{}) (*sql.Rows, error)
+	QueryRow(query string, args ...interface{}) *sql.Row
+}
+
 type positionRepository struct {
-	db *sql.DB
+	db dbExecutor
 }
 
 func NewPositionRepository(db *sql.DB) domain.PositionRepository {
 	return &positionRepository{db: db}
+}
+
+func NewPositionRepositoryWithTx(tx *sql.Tx) domain.PositionRepository {
+	return &positionRepository{db: tx}
 }
 
 func (r *positionRepository) GetPositionByAssetSymbol(user_id, symbol string) (*domain.Position, error) {
