@@ -6,6 +6,7 @@ import (
 	"github.com/raphaelleveque/IRGlobal/backend/internal/auth"
 	"github.com/raphaelleveque/IRGlobal/backend/internal/currency"
 	"github.com/raphaelleveque/IRGlobal/backend/internal/domain"
+	"github.com/raphaelleveque/IRGlobal/backend/internal/position"
 	"github.com/raphaelleveque/IRGlobal/backend/internal/transaction"
 	"github.com/raphaelleveque/IRGlobal/backend/internal/user"
 )
@@ -17,33 +18,40 @@ type AppContainer struct {
 	authHandler        *auth.AuthHandler
 	transactionService domain.TransactionService
 	transactionHandler *transaction.TransactionHandler
-	currencyService domain.CurrencyService
+	currencyService    domain.CurrencyService
+	positionService    domain.PositionService
+	positionHandler    *position.PositionHandler
 }
 
 func NewAppContainer(db *sql.DB, secretKey []byte) *AppContainer {
 	// Repositories
 	userRepo := user.NewUserRepository(db)
 	transactionRepo := transaction.NewTransactionRepository(db) // Será necessário quando criar
+	positionRepo := position.NewPositionRepository(db)
 
 	// Services
 	userService := user.NewUserService(userRepo)
 	authService := auth.NewAuthService(secretKey, userService)
 	currencyService := currency.NewCurrencyService()
 	transactionService := transaction.NewTransactionService(transactionRepo, currencyService) // Será necessário quando criar
+	positionService := position.NewPositionService(positionRepo)
 
 	// Handlers
 	userHandler := user.NewUserHandler(userService)
 	authHandler := auth.NewAuthHandler(userService, authService)
-	transactionHandler := transaction.NewTransactionHandler(transactionService) // Será necessário quando criar
+	transactionHandler := transaction.NewTransactionHandler(transactionService, positionService) // Será necessário quando criar
+	positionHandler := position.NewPositionHandler(positionService)
 
 	return &AppContainer{
-		userService: userService,
-		userHandler: userHandler,
-		authService: authService,
-		authHandler: authHandler,
-		transactionService: transactionService, 
-		transactionHandler: transactionHandler, 
-		currencyService: currencyService,
+		userService:        userService,
+		userHandler:        userHandler,
+		authService:        authService,
+		authHandler:        authHandler,
+		transactionService: transactionService,
+		transactionHandler: transactionHandler,
+		currencyService:    currencyService,
+		positionService:    positionService,
+		positionHandler:    positionHandler,
 	}
 }
 
@@ -62,4 +70,3 @@ func (c *AppContainer) GetAuthService() domain.AuthService {
 func (c *AppContainer) GetTransactionHandler() *transaction.TransactionHandler {
 	return c.transactionHandler
 }
-

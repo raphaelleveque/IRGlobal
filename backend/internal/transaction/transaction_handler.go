@@ -10,6 +10,7 @@ import (
 
 type TransactionHandler struct {
 	transactionService domain.TransactionService
+	positionService domain.PositionService
 }
 
 type AddTransactionRequest struct {
@@ -25,8 +26,8 @@ type DeleteTransactionRequest struct {
 	ID string `json:"id" binding:"required" example:"d081b7c0-b3b6-49ba-a9b7-86b56a65fb89"`
 }
 
-func NewTransactionHandler(transactionService domain.TransactionService) *TransactionHandler {
-	return &TransactionHandler{transactionService: transactionService}
+func NewTransactionHandler(transactionService domain.TransactionService, positionService domain.PositionService) *TransactionHandler {
+	return &TransactionHandler{transactionService: transactionService, positionService: positionService}
 }
 
 // Register godoc
@@ -77,8 +78,15 @@ func (h *TransactionHandler) AddTransaction(c *gin.Context) {
 		return
 	}
 
+	position, err := h.positionService.CalculatePosition(transaction)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
 	c.JSON(http.StatusCreated, gin.H{
 		"transaction": transaction,
+		"position": position,
 	})
 }
 
