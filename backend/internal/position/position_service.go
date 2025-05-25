@@ -7,7 +7,7 @@ import (
 )
 
 type positionService struct {
-	repo domain.PositionRepository
+	repo               domain.PositionRepository
 	transactionService domain.TransactionService
 }
 
@@ -15,17 +15,16 @@ func NewPositionService(repo domain.PositionRepository, transactionService domai
 	return &positionService{repo: repo, transactionService: transactionService}
 }
 
-
-func (s *positionService) CalculatePosition(transaction *domain.Transaction) (*domain.Position, error) {
+func (s *positionService) CalculatePosition(transaction *domain.Transaction, dbTx domain.DBTx) (*domain.Position, error) {
 	position, err := s.repo.GetPositionByAssetSymbol(transaction.UserID, transaction.AssetSymbol)
 	if err != nil {
 		return nil, err
 	}
 	if position == nil {
 		position = &domain.Position{
-			UserID: transaction.UserID,
+			UserID:      transaction.UserID,
 			AssetSymbol: transaction.AssetSymbol,
-			AssetType: transaction.AssetType,
+			AssetType:   transaction.AssetType,
 		}
 	}
 
@@ -37,26 +36,26 @@ func (s *positionService) CalculatePosition(transaction *domain.Transaction) (*d
 	position.Quantity = positionQuantity
 	position.TotalCostUSD, position.TotalCostBRL = s.calculateTotalCost(position)
 
-	position, err = s.repo.UpdatePosition(position)
+	position, err = s.repo.UpdatePosition(position, dbTx)
 	if err != nil {
 		return nil, err
 	}
 	return position, nil
 }
 
-func (s *positionService) RecalculatePosition(userId, symbol string) (*domain.Position, error) {
+func (s *positionService) RecalculatePosition(userId, symbol string, dbTx domain.DBTx) (*domain.Position, error) {
 	transactions, err := s.transactionService.FindAllBySymbol(userId, symbol)
 	if err != nil {
 		return nil, err
 	}
-	_, err = s.repo.DeletePosition(userId, symbol)
-	if err != nil{
+	_, err = s.repo.DeletePosition(userId, symbol, dbTx)
+	if err != nil {
 		return nil, err
 	}
 
 	var position *domain.Position
 	for _, transaction := range transactions {
-		position, err = s.CalculatePosition(&transaction)
+		position, err = s.CalculatePosition(&transaction, dbTx)
 		if err != nil {
 			return nil, err
 		}

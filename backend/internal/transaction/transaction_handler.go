@@ -6,11 +6,12 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/raphaelleveque/IRGlobal/backend/internal/domain"
+	"github.com/raphaelleveque/IRGlobal/backend/internal/transaction/orchestrator"
 )
 
 type TransactionHandler struct {
 	transactionService domain.TransactionService
-	positionService domain.PositionService
+	orchestrator       *orchestrator.TransactionOrchestrator
 }
 
 type AddTransactionRequest struct {
@@ -26,8 +27,11 @@ type DeleteTransactionRequest struct {
 	ID string `json:"id" binding:"required" example:"d081b7c0-b3b6-49ba-a9b7-86b56a65fb89"`
 }
 
-func NewTransactionHandler(transactionService domain.TransactionService, positionService domain.PositionService) *TransactionHandler {
-	return &TransactionHandler{transactionService: transactionService, positionService: positionService}
+func NewTransactionHandler(transactionService domain.TransactionService, orchestrator *orchestrator.TransactionOrchestrator) *TransactionHandler {
+	return &TransactionHandler{
+		transactionService: transactionService,
+		orchestrator:       orchestrator,
+	}
 }
 
 // Register godoc
@@ -72,13 +76,7 @@ func (h *TransactionHandler) AddTransaction(c *gin.Context) {
 		OperationDate: operationDate,
 	}
 
-	transaction, err = h.transactionService.AddTransaction(transaction)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	position, err := h.positionService.CalculatePosition(transaction)
+	transaction, position, err := h.orchestrator.AddTransactionWithPosition(transaction)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -86,7 +84,7 @@ func (h *TransactionHandler) AddTransaction(c *gin.Context) {
 
 	c.JSON(http.StatusCreated, gin.H{
 		"transaction": transaction,
-		"position": position,
+		"position":    position,
 	})
 }
 
@@ -115,19 +113,13 @@ func (h *TransactionHandler) DeleteTransaction(c *gin.Context) {
 		return
 	}
 
-	transaction, err := h.transactionService.DeleteTransaction(req.ID)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, err.Error())
-		return
-	}
-
 	user, exists := c.Get("user")
 	if !exists {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
 		return
 	}
 
-	position, err := h.positionService.RecalculatePosition(user.(*domain.User).ID, transaction.AssetSymbol)
+	transaction, position, err := h.orchestrator.DeleteTransactionWithPosition(req.ID, user.(*domain.User).ID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -135,6 +127,6 @@ func (h *TransactionHandler) DeleteTransaction(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"transaction": transaction,
-		"position": position,
+		"position":    position,
 	})
 }

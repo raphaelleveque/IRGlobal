@@ -35,15 +35,15 @@ type Transaction struct {
 }
 
 type TransactionService interface {
-	AddTransaction(transaction *Transaction) (*Transaction, error)
-	DeleteTransaction(id string) (*Transaction, error)
+	AddTransaction(transaction *Transaction, dbTx DBTx) (*Transaction, error)
+	DeleteTransaction(id string, dbTx DBTx) (*Transaction, error)
 	FindByID(id string) (*Transaction, error)
 	FindAllBySymbol(userId, symbol string) ([]Transaction, error)
 }
 
 type TransactionRepository interface {
-	Create(transaction *Transaction) (*Transaction, error)
-	Delete(id string) (*Transaction, error)
+	Create(transaction *Transaction, dbTx DBTx) (*Transaction, error)
+	Delete(id string, dbTx DBTx) (*Transaction, error)
 	FindByID(id string) (*Transaction, error)
 	FindAllBySymbol(userId, symbol string) ([]Transaction, error)
 }

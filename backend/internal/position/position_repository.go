@@ -4,6 +4,7 @@ import (
 	"database/sql"
 
 	"github.com/raphaelleveque/IRGlobal/backend/internal/domain"
+	"github.com/raphaelleveque/IRGlobal/backend/internal/infrastructure"
 )
 
 type positionRepository struct {
@@ -43,14 +44,17 @@ func (r *positionRepository) GetPositionByAssetSymbol(user_id, symbol string) (*
 	return &position, nil
 }
 
-func (r *positionRepository) UpdatePosition(position *domain.Position) (*domain.Position, error) {
+func (r *positionRepository) UpdatePosition(position *domain.Position, dbTx domain.DBTx) (*domain.Position, error) {
 	query := `
 		INSERT INTO positions (user_id, asset_symbol, asset_type, quantity, average_cost_usd, average_cost_brl, total_cost_usd, total_cost_brl)
 		VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
 		RETURNING id, user_id, asset_symbol, asset_type, quantity, average_cost_usd, average_cost_brl, total_cost_usd, total_cost_brl, created_at
 	`
 
-	err := r.db.QueryRow(query, position.UserID, position.AssetSymbol, position.AssetType, position.Quantity, position.AverageCostUSD, position.AverageCostBRL, position.TotalCostUSD, position.TotalCostBRL).Scan(
+	// Convert DBTx to *sql.Tx
+	sqlTx := dbTx.(*infrastructure.SqlDBTx).Tx
+
+	err := sqlTx.QueryRow(query, position.UserID, position.AssetSymbol, position.AssetType, position.Quantity, position.AverageCostUSD, position.AverageCostBRL, position.TotalCostUSD, position.TotalCostBRL).Scan(
 		&position.ID,
 		&position.UserID,
 		&position.AssetSymbol,
@@ -66,15 +70,18 @@ func (r *positionRepository) UpdatePosition(position *domain.Position) (*domain.
 	return position, err
 }
 
-func (r *positionRepository) DeletePosition(userId, symbol string) (*domain.Position, error) {
+func (r *positionRepository) DeletePosition(userId, symbol string, dbTx domain.DBTx) (*domain.Position, error) {
 	query := `
 		DELETE FROM positions
 		WHERE user_id = $1 AND asset_symbol = $2
 		RETURNING id, user_id, asset_symbol, asset_type, quantity, average_cost_usd, average_cost_brl, total_cost_usd, total_cost_brl, created_at
 	`
 
+	// Convert DBTx to *sql.Tx
+	sqlTx := dbTx.(*infrastructure.SqlDBTx).Tx
+
 	var position domain.Position
-	err := r.db.QueryRow(query, userId, symbol).Scan(
+	err := sqlTx.QueryRow(query, userId, symbol).Scan(
 		&position.ID,
 		&position.UserID,
 		&position.AssetSymbol,

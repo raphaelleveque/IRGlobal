@@ -6,8 +6,10 @@ import (
 	"github.com/raphaelleveque/IRGlobal/backend/internal/auth"
 	"github.com/raphaelleveque/IRGlobal/backend/internal/currency"
 	"github.com/raphaelleveque/IRGlobal/backend/internal/domain"
+	"github.com/raphaelleveque/IRGlobal/backend/internal/infrastructure"
 	"github.com/raphaelleveque/IRGlobal/backend/internal/position"
 	"github.com/raphaelleveque/IRGlobal/backend/internal/transaction"
+	"github.com/raphaelleveque/IRGlobal/backend/internal/transaction/orchestrator"
 	"github.com/raphaelleveque/IRGlobal/backend/internal/user"
 )
 
@@ -21,25 +23,33 @@ type AppContainer struct {
 	currencyService    domain.CurrencyService
 	positionService    domain.PositionService
 	positionHandler    *position.PositionHandler
+	unitOfWork         domain.UnitOfWork
+	orchestrator       *orchestrator.TransactionOrchestrator
 }
 
 func NewAppContainer(db *sql.DB, secretKey []byte) *AppContainer {
+	// Infrastructure
+	unitOfWork := infrastructure.NewSqlUnitOfWork(db)
+
 	// Repositories
 	userRepo := user.NewUserRepository(db)
-	transactionRepo := transaction.NewTransactionRepository(db) // Será necessário quando criar
+	transactionRepo := transaction.NewTransactionRepository(db)
 	positionRepo := position.NewPositionRepository(db)
 
 	// Services
 	userService := user.NewUserService(userRepo)
 	authService := auth.NewAuthService(secretKey, userService)
 	currencyService := currency.NewCurrencyService()
-	transactionService := transaction.NewTransactionService(transactionRepo, currencyService) // Será necessário quando criar
+	transactionService := transaction.NewTransactionService(transactionRepo, currencyService)
 	positionService := position.NewPositionService(positionRepo, transactionService)
+
+	// Orchestrator
+	transactionOrchestrator := orchestrator.NewTransactionOrchestrator(transactionService, positionService, unitOfWork)
 
 	// Handlers
 	userHandler := user.NewUserHandler(userService)
 	authHandler := auth.NewAuthHandler(userService, authService)
-	transactionHandler := transaction.NewTransactionHandler(transactionService, positionService) // Será necessário quando criar
+	transactionHandler := transaction.NewTransactionHandler(transactionService, transactionOrchestrator)
 	positionHandler := position.NewPositionHandler(positionService)
 
 	return &AppContainer{
@@ -52,6 +62,8 @@ func NewAppContainer(db *sql.DB, secretKey []byte) *AppContainer {
 		currencyService:    currencyService,
 		positionService:    positionService,
 		positionHandler:    positionHandler,
+		unitOfWork:         unitOfWork,
+		orchestrator:       transactionOrchestrator,
 	}
 }
 

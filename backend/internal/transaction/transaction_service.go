@@ -13,7 +13,7 @@ func NewTransactionService(repo domain.TransactionRepository, currencyService do
 	return &transactionService{repo: repo, currencyService: currencyService}
 }
 
-func (s *transactionService) AddTransaction(transaction *domain.Transaction) (*domain.Transaction, error) {
+func (s *transactionService) AddTransaction(transaction *domain.Transaction, dbTx domain.DBTx) (*domain.Transaction, error) {
 	usdbrlRate, err := s.currencyService.GetUSDToBRL(transaction.OperationDate)
 	if err != nil {
 		return transaction, err
@@ -22,12 +22,12 @@ func (s *transactionService) AddTransaction(transaction *domain.Transaction) (*d
 	s.setBRLPrice(transaction, usdbrlRate)
 	s.setTotalCost(transaction)
 
-	transaction, err = s.repo.Create(transaction)
+	transaction, err = s.repo.Create(transaction, dbTx)
 	return transaction, err
 }
 
-func (s *transactionService) DeleteTransaction(id string) (*domain.Transaction, error) {
-	transaction, err := s.repo.Delete(id)
+func (s *transactionService) DeleteTransaction(id string, dbTx domain.DBTx) (*domain.Transaction, error) {
+	transaction, err := s.repo.Delete(id, dbTx)
 	return transaction, err
 }
 
