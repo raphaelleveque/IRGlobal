@@ -1,11 +1,15 @@
 package orchestrator
 
-import "github.com/raphaelleveque/IRGlobal/backend/internal/domain"
+import (
+	"errors"
+
+	"github.com/raphaelleveque/IRGlobal/backend/internal/domain"
+)
 
 type TransactionOrchestrator struct {
 	transactionService domain.TransactionService
 	positionService    domain.PositionService
-	pnlService domain.RealizedPNLService
+	pnlService         domain.RealizedPNLService
 	uow                domain.UnitOfWork
 }
 
@@ -13,7 +17,7 @@ func NewTransactionOrchestrator(transactionService domain.TransactionService, po
 	return &TransactionOrchestrator{
 		transactionService: transactionService,
 		positionService:    positionService,
-		pnlService: pnlService,
+		pnlService:         pnlService,
 		uow:                uow,
 	}
 }
@@ -78,6 +82,18 @@ func (o *TransactionOrchestrator) DeleteTransactionWithPosition(transactionID st
 	position, err := o.positionService.RecalculatePosition(userID, transaction.AssetSymbol, dbTx)
 	if err != nil {
 		return nil, nil, err
+	}
+
+	if position != nil && position.Quantity < 0 {
+		return nil, nil, errors.New("you cannot have a negative position")
+	}
+
+	// Recalculate PNL if the deleted transaction was a sell
+	if transaction.Type == domain.Sell {
+		_, err = o.pnlService.RecalculatePNL(userID, transaction.AssetSymbol, dbTx)
+		if err != nil {
+			return nil, nil, err
+		}
 	}
 
 	// Commit transaction

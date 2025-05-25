@@ -46,7 +46,7 @@ func NewAppContainer(db *sql.DB, secretKey []byte) *AppContainer {
 	currencyService := currency.NewCurrencyService()
 	transactionService := transaction.NewTransactionService(transactionRepo, currencyService)
 	positionService := position.NewPositionService(positionRepo, transactionService)
-	realizedpnlService := realizedpnl.NewRealizedPNLService(realizedpnlRepo)
+	realizedpnlService := realizedpnl.NewRealizedPNLService(realizedpnlRepo, transactionService)
 
 	// Orchestrator
 	transactionOrchestrator := orchestrator.NewTransactionOrchestrator(transactionService, positionService, realizedpnlService, unitOfWork)

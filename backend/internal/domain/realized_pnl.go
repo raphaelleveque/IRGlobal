@@ -22,7 +22,7 @@ type RealizedPNL struct {
 }
 
 type RealizedPNLService interface {
-	CalculatePNL	(transaction *Transaction, position *Position, dbTx DBTx) (*RealizedPNL, error)
+	CalculatePNL(transaction *Transaction, position *Position, dbTx DBTx) (*RealizedPNL, error)
 	RecalculatePNL(userId, symbol string, dbTx DBTx) (*RealizedPNL, error)
 }
 
@@ -31,4 +31,3 @@ type RealizedPNLRepository interface {
 	GetPNLByAssetSymbol(user_id, symbol string) (*RealizedPNL, error)
 	DeletePNL(userId, symbol string, dbTx DBTx) (*RealizedPNL, error)
 }
-
