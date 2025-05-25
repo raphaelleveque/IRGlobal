@@ -117,15 +117,19 @@ definitions:
         - CRYPTO
         - STOCK
         - ETF
+        example: STOCK
       operation_date:
         description: Data da operação
+        example: "2023-10-01"
         type: string
       price_in_usd:
         description: Preço em USD
+        example: 50
         minimum: 0
         type: number
       quantity:
         description: Quantidade
+        example: 20
         minimum: 0
         type: number
       type:
@@ -146,7 +150,7 @@ definitions:
   transaction.DeleteTransactionRequest:
     properties:
       id:
-        example: ss1dofn-oqin3vdkf-alds8foi
+        example: d081b7c0-b3b6-49ba-a9b7-86b56a65fb89
         type: string
     required:
     - id

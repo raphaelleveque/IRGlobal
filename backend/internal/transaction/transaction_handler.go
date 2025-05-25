@@ -15,12 +15,12 @@ type TransactionHandler struct {
 }
 
 type AddTransactionRequest struct {
-	AssetSymbol   string               `json:"asset_symbol" binding:"required" example:"AAPL"`       // Símbolo do ativo
-	AssetType     domain.AssetType     `json:"asset_type" binding:"required,oneof=CRYPTO STOCK ETF"` // Tipo de ativo
-	Quantity      float64              `json:"quantity" binding:"required,min=0"`                    // Quantidade
-	PriceInUSD    float64              `json:"price_in_usd" binding:"required,min=0"`                // Preço em USD
-	Type          domain.OperationType `json:"type" binding:"required,oneof=BUY SELL"`               // Tipo de operação
-	OperationDate string               `json:"operation_date" binding:"required"`                    // Data da operação
+	AssetSymbol   string               `json:"asset_symbol" binding:"required" example:"AAPL"`                       // Símbolo do ativo
+	AssetType     domain.AssetType     `json:"asset_type" binding:"required,oneof=CRYPTO STOCK ETF" example:"STOCK"` // Tipo de ativo
+	Quantity      float64              `json:"quantity" binding:"required,min=0" example:"20"`                      // Quantidade
+	PriceInUSD    float64              `json:"price_in_usd" binding:"required,min=0" example:"50"`                  // Preço em USD
+	Type          domain.OperationType `json:"type" binding:"required,oneof=BUY SELL"`                               // Tipo de operação
+	OperationDate string               `json:"operation_date" binding:"required" example:"2023-10-01"`               // Data da operação
 }
 
 type DeleteTransactionRequest struct {

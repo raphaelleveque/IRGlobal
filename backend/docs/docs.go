@@ -442,21 +442,25 @@ const docTemplate = `{
                         {
                             "$ref": "#/definitions/domain.AssetType"
                         }
-                    ]
+                    ],
+                    "example": "STOCK"
                 },
                 "operation_date": {
                     "description": "Data da operação",
-                    "type": "string"
+                    "type": "string",
+                    "example": "2023-10-01"
                 },
                 "price_in_usd": {
                     "description": "Preço em USD",
                     "type": "number",
-                    "minimum": 0
+                    "minimum": 0,
+                    "example": 50
                 },
                 "quantity": {
                     "description": "Quantidade",
                     "type": "number",
-                    "minimum": 0
+                    "minimum": 0,
+                    "example": 20
                 },
                 "type": {
                     "description": "Tipo de operação",
@@ -480,7 +484,7 @@ const docTemplate = `{
             "properties": {
                 "id": {
                     "type": "string",
-                    "example": "ss1dofn-oqin3vdkf-alds8foi"
+                    "example": "d081b7c0-b3b6-49ba-a9b7-86b56a65fb89"
                 }
             }
         }

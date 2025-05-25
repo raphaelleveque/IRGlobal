@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 )
@@ -14,9 +15,11 @@ func FetchUSDToBRL(date time.Time) (float64, error) {
 		date.Format("01-02-2006"),
 	)
 
+	log.Println("Requisição HTTP para URL:", url)
+
 	resp, err := http.Get(url)
 	if err != nil {
-		return 0, nil
+		return 0, err
 	}
 	defer resp.Body.Close()
 
@@ -25,9 +28,12 @@ func FetchUSDToBRL(date time.Time) (float64, error) {
 		return 0, err
 	}
 
+	responseJSON, _ := json.Marshal(result)
+	log.Println("Resposta JSON:", string(responseJSON))
+
 	if len(result.Value) == 0 {
 		return 0, errors.New("USD BRL Rate not found")
 	}
-	
+
 	return result.Value[0].BuyRate, nil
 }
