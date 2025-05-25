@@ -138,6 +138,64 @@ const docTemplate = `{
                 }
             }
         },
+        "/position/get": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Retorna uma lista de posições para um usuário específico.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "position"
+                ],
+                "summary": "Lista as posições do usuário",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token de autenticação",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de posições do usuário",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/domain.Position"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Dados inválidos",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/transaction/add": {
             "post": {
                 "security": [
@@ -332,6 +390,55 @@ const docTemplate = `{
                 "Buy",
                 "Sell"
             ]
+        },
+        "domain.Position": {
+            "type": "object",
+            "properties": {
+                "asset_symbol": {
+                    "description": "Símbolo do ativo",
+                    "type": "string"
+                },
+                "asset_type": {
+                    "description": "Tipo de ativo",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/domain.AssetType"
+                        }
+                    ]
+                },
+                "average_cost_brl": {
+                    "description": "Preço em BRL",
+                    "type": "number"
+                },
+                "average_cost_usd": {
+                    "description": "Preço em BRL",
+                    "type": "number"
+                },
+                "created_at": {
+                    "description": "Data de criação",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "UUID",
+                    "type": "string"
+                },
+                "quantity": {
+                    "description": "Quantidade",
+                    "type": "number"
+                },
+                "total_cost_brl": {
+                    "description": "Custo total em USD",
+                    "type": "number"
+                },
+                "total_cost_usd": {
+                    "description": "Custo total em USD",
+                    "type": "number"
+                },
+                "user_id": {
+                    "description": "UUID do usuário",
+                    "type": "string"
+                }
+            }
         },
         "domain.Transaction": {
             "type": "object",

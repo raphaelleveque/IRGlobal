@@ -90,3 +90,7 @@ func (c *AppContainer) GetAuthService() domain.AuthService {
 func (c *AppContainer) GetTransactionHandler() *transaction.TransactionHandler {
 	return c.transactionHandler
 }
+
+func (c *AppContainer) GetPositionHandler() *position.PositionHandler {
+	return c.positionHandler
+}

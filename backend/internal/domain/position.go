@@ -19,10 +19,12 @@ type PositionService interface {
 	CalculatePosition(transaction *Transaction, dbTx DBTx) (*Position, error)
 	RecalculatePosition(userId, symbol, transactionId string, dbTx DBTx) (*Position, error)
 	GetPositionByAssetSymbol(userId, symbol string) (*Position, error)
+	GetPositions(userId string) ([]Position, error)
 }
 
 type PositionRepository interface {
 	UpdatePosition(position *Position, dbTx DBTx) (*Position, error)
 	GetPositionByAssetSymbol(user_id, symbol string) (*Position, error)
+	GetPositions(user_id string) ([]Position, error)
 	DeletePosition(userId, symbol string, dbTx DBTx) (*Position, error)
 }

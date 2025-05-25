@@ -44,4 +44,10 @@ func setupProtectedRoutes(router *gin.Engine, appContainer *container.AppContain
 		transaction.POST("/add", appContainer.GetTransactionHandler().AddTransaction)
 		transaction.DELETE("/delete", appContainer.GetTransactionHandler().DeleteTransaction)
 	}
+
+	// Rotas de posição
+	position := protected.Group("/position")
+	{
+		position.GET("get", appContainer.GetPositionHandler().GetPositions)
+	}
 }

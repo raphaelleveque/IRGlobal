@@ -48,6 +48,40 @@ definitions:
     x-enum-varnames:
     - Buy
     - Sell
+  domain.Position:
+    properties:
+      asset_symbol:
+        description: Símbolo do ativo
+        type: string
+      asset_type:
+        allOf:
+        - $ref: '#/definitions/domain.AssetType'
+        description: Tipo de ativo
+      average_cost_brl:
+        description: Preço em BRL
+        type: number
+      average_cost_usd:
+        description: Preço em BRL
+        type: number
+      created_at:
+        description: Data de criação
+        type: string
+      id:
+        description: UUID
+        type: string
+      quantity:
+        description: Quantidade
+        type: number
+      total_cost_brl:
+        description: Custo total em USD
+        type: number
+      total_cost_usd:
+        description: Custo total em USD
+        type: number
+      user_id:
+        description: UUID do usuário
+        type: string
+    type: object
   domain.Transaction:
     properties:
       asset_symbol:
@@ -243,6 +277,43 @@ paths:
       summary: Registrar um novo usuário
       tags:
       - auth
+  /position/get:
+    get:
+      consumes:
+      - application/json
+      description: Retorna uma lista de posições para um usuário específico.
+      parameters:
+      - description: Token de autenticação
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Lista de posições do usuário
+          schema:
+            items:
+              $ref: '#/definitions/domain.Position'
+            type: array
+        "400":
+          description: Dados inválidos
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Erro interno do servidor
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Lista as posições do usuário
+      tags:
+      - position
   /transaction/add:
     post:
       consumes:

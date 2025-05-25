@@ -128,3 +128,7 @@ func (s *positionService) calculateTotalCost(position *domain.Position) (totalCo
 func (s *positionService) GetPositionByAssetSymbol(userId, symbol string) (*domain.Position, error) {
 	return s.repo.GetPositionByAssetSymbol(userId, symbol)
 }
+
+func (s *positionService) GetPositions(userId string) ([]domain.Position, error) {
+	return s.repo.GetPositions(userId)
+}

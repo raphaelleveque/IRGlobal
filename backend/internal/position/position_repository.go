@@ -44,6 +44,47 @@ func (r *positionRepository) GetPositionByAssetSymbol(user_id, symbol string) (*
 	return &position, nil
 }
 
+func (r *positionRepository) GetPositions(user_id string) ([]domain.Position, error) {
+	query := `
+		SELECT id, user_id, asset_symbol, asset_type, quantity, average_cost_usd, average_cost_brl, total_cost_usd, total_cost_brl, created_at
+		FROM positions
+		WHERE user_id = $1
+	`
+
+	var positions []domain.Position
+	rows, err := r.db.Query(query, user_id)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var position domain.Position
+		err := rows.Scan(
+			&position.ID,
+			&position.UserID,
+			&position.AssetSymbol,
+			&position.AssetType,
+			&position.Quantity,
+			&position.AverageCostUSD,
+			&position.AverageCostBRL,
+			&position.TotalCostUSD,
+			&position.TotalCostBRL,
+			&position.CreatedAt,
+		)	
+		if err != nil {
+			return nil, err
+		}
+		positions = append(positions, position)
+	}
+	
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	
+	return positions, nil
+}
+
 func (r *positionRepository) UpdatePosition(position *domain.Position, dbTx domain.DBTx) (*domain.Position, error) {
 	// UPSERT: UPDATE se existir, INSERT se não existir
 	query := `
