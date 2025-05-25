@@ -39,6 +39,7 @@ type TransactionService interface {
 	DeleteTransaction(id string, dbTx DBTx) (*Transaction, error)
 	FindByID(id string) (*Transaction, error)
 	FindAllBySymbol(userId, symbol string) ([]Transaction, error)
+	FindAllBySymbolExcludingOne(userId, symbol, transactionId string) ([]Transaction, error)
 }
 
 type TransactionRepository interface {
@@ -46,4 +47,5 @@ type TransactionRepository interface {
 	Delete(id string, dbTx DBTx) (*Transaction, error)
 	FindByID(id string) (*Transaction, error)
 	FindAllBySymbol(userId, symbol string) ([]Transaction, error)
+	FindAllBySymbolExcludingOne(userId, symbol, transactionId string) ([]Transaction, error)
 }

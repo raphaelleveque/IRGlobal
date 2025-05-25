@@ -1,8 +1,6 @@
 package orchestrator
 
 import (
-	"errors"
-
 	"github.com/raphaelleveque/IRGlobal/backend/internal/domain"
 )
 
@@ -39,6 +37,12 @@ func (o *TransactionOrchestrator) AddTransactionWithPosition(transaction *domain
 		return nil, nil, nil, err
 	}
 
+	// Get old position to use for PNL
+	oldPosition, err := o.positionService.GetPositionByAssetSymbol(transaction.UserID, transaction.AssetSymbol)
+	if err != nil {
+		return nil, nil, nil, err
+	}
+
 	// Calculate position
 	position, err := o.positionService.CalculatePosition(transaction, dbTx)
 	if err != nil {
@@ -47,7 +51,7 @@ func (o *TransactionOrchestrator) AddTransactionWithPosition(transaction *domain
 
 	var realizedPnl *domain.RealizedPNL
 	if transaction.Type == domain.Sell {
-		realizedPnl, err = o.pnlService.CalculatePNL(transaction, position, dbTx)
+		realizedPnl, err = o.pnlService.CalculatePNL(transaction, oldPosition, dbTx)
 		if err != nil {
 			return nil, nil, nil, err
 		}
@@ -61,10 +65,10 @@ func (o *TransactionOrchestrator) AddTransactionWithPosition(transaction *domain
 	return transaction, position, realizedPnl, nil
 }
 
-func (o *TransactionOrchestrator) DeleteTransactionWithPosition(transactionID string, userID string) (*domain.Transaction, *domain.Position, error) {
+func (o *TransactionOrchestrator) DeleteTransactionWithPosition(transactionID string, userID string) (*domain.Transaction, *domain.Position, *domain.RealizedPNL, error) {
 	dbTx, err := o.uow.Begin()
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, nil, err
 	}
 	defer func() {
 		if err != nil {
@@ -75,31 +79,24 @@ func (o *TransactionOrchestrator) DeleteTransactionWithPosition(transactionID st
 	// Delete transaction
 	transaction, err := o.transactionService.DeleteTransaction(transactionID, dbTx)
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, nil, err
 	}
 
 	// Recalculate position
-	position, err := o.positionService.RecalculatePosition(userID, transaction.AssetSymbol, dbTx)
+	position, err := o.positionService.RecalculatePosition(userID, transaction.AssetSymbol, transactionID, dbTx)
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, nil, err
 	}
 
-	if position != nil && position.Quantity < 0 {
-		return nil, nil, errors.New("you cannot have a negative position")
-	}
-
-	// Recalculate PNL if the deleted transaction was a sell
-	if transaction.Type == domain.Sell {
-		_, err = o.pnlService.RecalculatePNL(userID, transaction.AssetSymbol, dbTx)
-		if err != nil {
-			return nil, nil, err
-		}
+	pnl, err := o.pnlService.RecalculatePNL(userID, transaction.AssetSymbol, transactionID, dbTx)
+	if err != nil {
+		return nil, nil, nil, err
 	}
 
 	// Commit transaction
 	if err = dbTx.Commit(); err != nil {
-		return nil, nil, err
+		return nil, nil, nil, err
 	}
 
-	return transaction, position, nil
+	return transaction, position, pnl, nil
 }

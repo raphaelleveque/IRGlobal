@@ -17,8 +17,8 @@ type TransactionHandler struct {
 type AddTransactionRequest struct {
 	AssetSymbol   string               `json:"asset_symbol" binding:"required" example:"AAPL"`                       // Símbolo do ativo
 	AssetType     domain.AssetType     `json:"asset_type" binding:"required,oneof=CRYPTO STOCK ETF" example:"STOCK"` // Tipo de ativo
-	Quantity      float64              `json:"quantity" binding:"required,min=0" example:"20"`                      // Quantidade
-	PriceInUSD    float64              `json:"price_in_usd" binding:"required,min=0" example:"50"`                  // Preço em USD
+	Quantity      float64              `json:"quantity" binding:"required,min=0" example:"20"`                       // Quantidade
+	PriceInUSD    float64              `json:"price_in_usd" binding:"required,min=0" example:"50"`                   // Preço em USD
 	Type          domain.OperationType `json:"type" binding:"required,oneof=BUY SELL"`                               // Tipo de operação
 	OperationDate string               `json:"operation_date" binding:"required" example:"2025-02-11"`               // Data da operação
 }
@@ -120,7 +120,7 @@ func (h *TransactionHandler) DeleteTransaction(c *gin.Context) {
 		return
 	}
 
-	transaction, position, err := h.orchestrator.DeleteTransactionWithPosition(req.ID, user.(*domain.User).ID)
+	transaction, position, pnl, err := h.orchestrator.DeleteTransactionWithPosition(req.ID, user.(*domain.User).ID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -129,5 +129,6 @@ func (h *TransactionHandler) DeleteTransaction(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"transaction": transaction,
 		"position":    position,
+		"pnl":         pnl,
 	})
 }

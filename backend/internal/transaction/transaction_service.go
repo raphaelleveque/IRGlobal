@@ -43,6 +43,10 @@ func (s *transactionService) FindAllBySymbol(userId, symbol string) ([]domain.Tr
 	return s.repo.FindAllBySymbol(userId, symbol)
 }
 
+func (s *transactionService) FindAllBySymbolExcludingOne(userId, symbol, transactionId string) ([]domain.Transaction, error) {
+	return s.repo.FindAllBySymbolExcludingOne(userId, symbol, transactionId)
+}
+
 func (s *transactionService) setBRLPrice(transaction *domain.Transaction, usdbrlRate float64) {
 	transaction.USDBRLRate = usdbrlRate
 	transaction.PriceInBRL = transaction.PriceInUSD * transaction.USDBRLRate

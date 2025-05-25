@@ -50,8 +50,8 @@ func (s *realizedPNLService) CalculatePNL(transaction *domain.Transaction, posit
 	return pnl, nil
 }
 
-func (s *realizedPNLService) RecalculatePNL(userId, symbol string, dbTx domain.DBTx) (*domain.RealizedPNL, error) {
-	allTransactions, err := s.transactionService.FindAllBySymbol(userId, symbol)
+func (s *realizedPNLService) RecalculatePNL(userId, symbol, transactionId string, dbTx domain.DBTx) (*domain.RealizedPNL, error) {
+	allTransactions, err := s.transactionService.FindAllBySymbolExcludingOne(userId, symbol, transactionId)
 	if err != nil {
 		return nil, err
 	}

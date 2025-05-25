@@ -23,7 +23,7 @@ type RealizedPNL struct {
 
 type RealizedPNLService interface {
 	CalculatePNL(transaction *Transaction, position *Position, dbTx DBTx) (*RealizedPNL, error)
-	RecalculatePNL(userId, symbol string, dbTx DBTx) (*RealizedPNL, error)
+	RecalculatePNL(userId, symbol, transactionId string, dbTx DBTx) (*RealizedPNL, error)
 }
 
 type RealizedPNLRepository interface {

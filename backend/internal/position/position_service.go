@@ -33,6 +33,11 @@ func (s *positionService) CalculatePosition(transaction *domain.Transaction, dbT
 	if err != nil {
 		return nil, err
 	}
+	if positionQuantity == 0 {
+		_, err = s.repo.DeletePosition(position.UserID, position.AssetSymbol, dbTx)
+		return nil, err
+	}
+
 	position.Quantity = positionQuantity
 	position.TotalCostUSD, position.TotalCostBRL = s.calculateTotalCost(position)
 
@@ -43,8 +48,8 @@ func (s *positionService) CalculatePosition(transaction *domain.Transaction, dbT
 	return position, nil
 }
 
-func (s *positionService) RecalculatePosition(userId, symbol string, dbTx domain.DBTx) (*domain.Position, error) {
-	transactions, err := s.transactionService.FindAllBySymbol(userId, symbol)
+func (s *positionService) RecalculatePosition(userId, symbol, transactionId string, dbTx domain.DBTx) (*domain.Position, error) {
+	transactions, err := s.transactionService.FindAllBySymbolExcludingOne(userId, symbol, transactionId)
 	if err != nil {
 		return nil, err
 	}
@@ -71,6 +76,11 @@ func (s *positionService) RecalculatePosition(userId, symbol string, dbTx domain
 		}
 		position.Quantity = positionQuantity
 		position.TotalCostUSD, position.TotalCostBRL = s.calculateTotalCost(position)
+	}
+
+	if position.Quantity == 0 {
+		_, err = s.repo.DeletePosition(position.UserID, position.AssetSymbol, dbTx)
+		return nil, err
 	}
 
 	position, err = s.repo.UpdatePosition(position, dbTx)
@@ -113,4 +123,8 @@ func (s *positionService) calculateAverageCost(transaction *domain.Transaction, 
 
 func (s *positionService) calculateTotalCost(position *domain.Position) (totalCostUSD float64, totalCostBRL float64) {
 	return (position.AverageCostUSD * position.Quantity), (position.AverageCostBRL * position.Quantity)
+}
+
+func (s *positionService) GetPositionByAssetSymbol(userId, symbol string) (*domain.Position, error) {
+	return s.repo.GetPositionByAssetSymbol(userId, symbol)
 }
