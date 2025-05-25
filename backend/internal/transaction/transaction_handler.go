@@ -76,7 +76,7 @@ func (h *TransactionHandler) AddTransaction(c *gin.Context) {
 		OperationDate: operationDate,
 	}
 
-	transaction, position, err := h.orchestrator.AddTransactionWithPosition(transaction)
+	transaction, position, realizedPnl, err := h.orchestrator.AddTransactionWithPosition(transaction)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -85,6 +85,7 @@ func (h *TransactionHandler) AddTransaction(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{
 		"transaction": transaction,
 		"position":    position,
+		"realizedPnl": realizedPnl,
 	})
 }
 

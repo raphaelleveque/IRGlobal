@@ -45,9 +45,17 @@ func (r *positionRepository) GetPositionByAssetSymbol(user_id, symbol string) (*
 }
 
 func (r *positionRepository) UpdatePosition(position *domain.Position, dbTx domain.DBTx) (*domain.Position, error) {
+	// UPSERT: UPDATE se existir, INSERT se não existir
 	query := `
 		INSERT INTO positions (user_id, asset_symbol, asset_type, quantity, average_cost_usd, average_cost_brl, total_cost_usd, total_cost_brl)
 		VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+		ON CONFLICT (user_id, asset_symbol)
+		DO UPDATE SET
+			quantity = EXCLUDED.quantity,
+			average_cost_usd = EXCLUDED.average_cost_usd,
+			average_cost_brl = EXCLUDED.average_cost_brl,
+			total_cost_usd = EXCLUDED.total_cost_usd,
+			total_cost_brl = EXCLUDED.total_cost_brl
 		RETURNING id, user_id, asset_symbol, asset_type, quantity, average_cost_usd, average_cost_brl, total_cost_usd, total_cost_brl, created_at
 	`
 

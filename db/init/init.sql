@@ -42,7 +42,28 @@ CREATE TABLE IF NOT EXISTS positions (
     average_cost_brl DECIMAL(18, 2) NOT NULL,
     total_cost_usd DECIMAL(18, 2) NOT NULL,
     total_cost_brl DECIMAL(18, 2) NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(user_id, asset_symbol)
+);
+
+CREATE TABLE IF NOT EXISTS realized_pnl (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    asset_symbol VARCHAR(50) NOT NULL,
+    asset_type asset_type NOT NULL,
+    quantity DECIMAL(18, 8) NOT NULL,
+    average_cost_usd DECIMAL(18, 2) NOT NULL,
+    average_cost_brl DECIMAL(18, 2) NOT NULL,
+    total_cost_usd DECIMAL(18, 2) NOT NULL,
+    total_cost_brl DECIMAL(18, 2) NOT NULL,
+    selling_price_usd DECIMAL(18, 2) NOT NULL,
+    selling_price_brl DECIMAL(18, 2) NOT NULL,
+    total_value_sold_usd DECIMAL(18, 2) NOT NULL,
+    total_value_sold_brl DECIMAL(18, 2) NOT NULL,
+    realized_profit_usd DECIMAL(18, 2) NOT NULL,
+    realized_profit_brl DECIMAL(18, 2) NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(user_id, asset_symbol)
 );
 
 -- Criar índices para melhorar a performance de consultas comuns

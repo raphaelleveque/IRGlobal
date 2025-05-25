@@ -48,18 +48,36 @@ func (s *positionService) RecalculatePosition(userId, symbol string, dbTx domain
 	if err != nil {
 		return nil, err
 	}
-	_, err = s.repo.DeletePosition(userId, symbol, dbTx)
+
+	// Se não há transações, deletar a posição
+	if len(transactions) == 0 {
+		_, err = s.repo.DeletePosition(userId, symbol, dbTx)
+		return nil, err
+	}
+
+	// Recalcular a posição do zero
+	position := &domain.Position{
+		UserID:      userId,
+		AssetSymbol: symbol,
+		AssetType:   transactions[0].AssetType, // Usar o tipo do primeiro transaction
+	}
+
+	// Processar todas as transações em ordem
+	for _, transaction := range transactions {
+		position.AverageCostUSD, position.AverageCostBRL = s.calculateAverageCost(&transaction, position)
+		positionQuantity, err := s.calculateNewQuantity(&transaction, position)
+		if err != nil {
+			return nil, err
+		}
+		position.Quantity = positionQuantity
+		position.TotalCostUSD, position.TotalCostBRL = s.calculateTotalCost(position)
+	}
+
+	position, err = s.repo.UpdatePosition(position, dbTx)
 	if err != nil {
 		return nil, err
 	}
 
-	var position *domain.Position
-	for _, transaction := range transactions {
-		position, err = s.CalculatePosition(&transaction, dbTx)
-		if err != nil {
-			return nil, err
-		}
-	}
 	return position, nil
 }
 
