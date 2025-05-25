@@ -448,7 +448,7 @@ const docTemplate = `{
                 "operation_date": {
                     "description": "Data da operação",
                     "type": "string",
-                    "example": "2023-10-01"
+                    "example": "2025-02-11"
                 },
                 "price_in_usd": {
                     "description": "Preço em USD",

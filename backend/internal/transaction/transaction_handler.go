@@ -20,7 +20,7 @@ type AddTransactionRequest struct {
 	Quantity      float64              `json:"quantity" binding:"required,min=0" example:"20"`                      // Quantidade
 	PriceInUSD    float64              `json:"price_in_usd" binding:"required,min=0" example:"50"`                  // Preço em USD
 	Type          domain.OperationType `json:"type" binding:"required,oneof=BUY SELL"`                               // Tipo de operação
-	OperationDate string               `json:"operation_date" binding:"required" example:"2023-10-01"`               // Data da operação
+	OperationDate string               `json:"operation_date" binding:"required" example:"2025-02-11"`               // Data da operação
 }
 
 type DeleteTransactionRequest struct {
