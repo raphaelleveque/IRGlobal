@@ -94,3 +94,7 @@ func (c *AppContainer) GetTransactionHandler() *transaction.TransactionHandler {
 func (c *AppContainer) GetPositionHandler() *position.PositionHandler {
 	return c.positionHandler
 }
+
+func (c *AppContainer) GetRealizedPNLHandler() *realizedpnl.RealizedPNLHandler {
+	return c.realizedPNLHandler
+}

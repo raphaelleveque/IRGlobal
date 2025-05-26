@@ -155,3 +155,67 @@ func (r *realizedPNLRepository) DeletePNL(userId, symbol string, dbTx domain.DBT
 
 	return &pnl, nil
 }
+
+func (r *realizedPNLRepository) GetPNLs(userId string) ([]domain.RealizedPNL, error) {
+	query := `
+		SELECT 
+			id,
+			user_id,
+			asset_symbol,
+			asset_type,
+			quantity,
+			average_cost_usd,
+			average_cost_brl,
+			total_cost_usd,
+			total_cost_brl,
+			selling_price_usd,
+			selling_price_brl,
+			total_value_sold_usd,
+			total_value_sold_brl,
+			realized_profit_usd,
+			realized_profit_brl,
+			created_at
+		FROM realized_pnl
+		WHERE user_id = $1
+	`
+
+	rows, err := r.db.Query(query, userId)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var pnls []domain.RealizedPNL
+	for rows.Next() {
+		var pnl domain.RealizedPNL
+		err := rows.Scan(
+			&pnl.ID,
+			&pnl.UserID,
+			&pnl.AssetSymbol,
+			&pnl.AssetType,
+			&pnl.Quantity,
+			&pnl.AverageCostUSD,
+			&pnl.AverageCostBRL,
+			&pnl.TotalCostUSD,
+			&pnl.TotalCostBRL,
+			&pnl.SellingPriceUSD,
+			&pnl.SellingPriceBRL,
+			&pnl.TotalValueSoldUSD,
+			&pnl.TotalValueSoldBRL,
+			&pnl.RealizedProfitUSD,
+			&pnl.RealizedProfitBRL,
+			&pnl.CreatedAt,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		pnls = append(pnls, pnl)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return pnls, nil
+}
+

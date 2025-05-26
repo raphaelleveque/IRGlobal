@@ -159,3 +159,7 @@ func (s *realizedPNLService) recalculateTotals(pnl *domain.RealizedPNL) *domain.
 	pnl.RealizedProfitUSD, pnl.RealizedProfitBRL = s.setRealizedProfit(pnl)
 	return pnl
 }
+
+func (s *realizedPNLService) GetPNLs(userId string) ([]domain.RealizedPNL, error) {
+	return s.repo.GetPNLs(userId)
+}

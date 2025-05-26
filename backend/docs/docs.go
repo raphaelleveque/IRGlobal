@@ -15,6 +15,64 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/RealizedPNL/get": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Retorna uma lista do PNL para um usuário específico.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "pnl"
+                ],
+                "summary": "Lista os Ganhos e Perdas do usuário",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token de autenticação",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de pnl do usuário",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/domain.RealizedPNL"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Dados inválidos",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/auth/login": {
             "post": {
                 "description": "Autentica o usuário no sistema",
@@ -432,6 +490,79 @@ const docTemplate = `{
                 },
                 "total_cost_usd": {
                     "description": "Custo total em USD",
+                    "type": "number"
+                },
+                "user_id": {
+                    "description": "UUID do usuário",
+                    "type": "string"
+                }
+            }
+        },
+        "domain.RealizedPNL": {
+            "type": "object",
+            "properties": {
+                "asset_symbol": {
+                    "description": "Símbolo do ativo",
+                    "type": "string"
+                },
+                "asset_type": {
+                    "description": "Tipo de ativo",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/domain.AssetType"
+                        }
+                    ]
+                },
+                "average_cost_brl": {
+                    "description": "Custo médio em BRL",
+                    "type": "number"
+                },
+                "average_cost_usd": {
+                    "description": "Custo médio em USD",
+                    "type": "number"
+                },
+                "created_at": {
+                    "description": "Data de criação",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "UUID",
+                    "type": "string"
+                },
+                "quantity": {
+                    "description": "Quantidade",
+                    "type": "number"
+                },
+                "realized_profit_brl": {
+                    "description": "Lucro realizado em BRL",
+                    "type": "number"
+                },
+                "realized_profit_usd": {
+                    "description": "Lucro realizado em USD",
+                    "type": "number"
+                },
+                "selling_price_brl": {
+                    "description": "Preço de venda em BRL",
+                    "type": "number"
+                },
+                "selling_price_usd": {
+                    "description": "Preço de venda em USD",
+                    "type": "number"
+                },
+                "total_cost_brl": {
+                    "description": "Custo total em BRL",
+                    "type": "number"
+                },
+                "total_cost_usd": {
+                    "description": "Custo total em USD",
+                    "type": "number"
+                },
+                "total_value_sold_brl": {
+                    "description": "Valor total da venda em BRL",
+                    "type": "number"
+                },
+                "total_value_sold_usd": {
+                    "description": "Valor total da venda em USD",
                     "type": "number"
                 },
                 "user_id": {
