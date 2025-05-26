@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuthNavigation } from "../../../hooks/useAuthNavigation";
-import { Button } from "../../../components/Button/Button";
-import { Input } from "../../../components/Input/Input";
+import { Button, Input, Logo } from "../../../components";
 import type { LoginFormData } from "../../../types/auth.types";
 
 // Este é nosso componente LoginPage
@@ -29,8 +28,15 @@ function LoginPage() {
   };
 
   return (
-    <div className="h-screen flex items-center justify-center bg-gray-50 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 sm:px-6 lg:px-8 relative">
+      <div
+        className="absolute top-0 left-0 right-0 flex justify-center"
+        style={{ top: "calc(50% - 300px)" }}
+      >
+        <Logo size="xlg" />
+      </div>
+
+      <div className="max-w-md w-full space-y-8 bg-gray-50">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
             Faça login na sua conta

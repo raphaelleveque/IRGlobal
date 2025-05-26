@@ -4,6 +4,7 @@ import type { RegisterFormData } from "../../../types/auth.types";
 import { useAuthNavigation } from "../../../hooks/useAuthNavigation";
 import { Input } from "../../../components/Input/Input";
 import { Button } from "../../../components/Button/Button";
+import { Logo } from "../../../components";
 
 function RegisterPage() {
   const [formData, setFormData] = useState<RegisterFormData>({
@@ -29,7 +30,13 @@ function RegisterPage() {
   };
 
   return (
-    <div className="h-screen flex items-center justify-center bg-gray-50 px-4 sm:px-6 lg:px-8">
+    <div className="flex items-center justify-center min-h-[calc(100vh-120px)] px-4 sm:px-6 lg:px-8 relative">
+      <div
+        className="absolute top-0 left-0 right-0 flex justify-center"
+        style={{ top: "calc(50% - 300px)" }}
+      >
+        <Logo size="xlg" />
+      </div>
       <div className="max-w-md w-full space-y-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
