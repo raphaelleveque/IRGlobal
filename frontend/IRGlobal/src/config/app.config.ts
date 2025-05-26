@@ -9,7 +9,7 @@ export const appConfig = {
         login: "/auth/login",
         register: "/auth/register",
       },
-      realizedPnl: "/RealizedPNL/get",
+      realizedPnl: "/realized-pnl/get",
       positions: "/position/get",
     },
   },

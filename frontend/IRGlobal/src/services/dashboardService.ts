@@ -11,19 +11,23 @@ const calculateDashboardSummary = (
   positions: Position[],
   realizedPnl: RealizedPNL[]
 ): DashboardSummary => {
+  // Garantir que temos arrays válidos
+  const safePositions = Array.isArray(positions) ? positions : [];
+  const safeRealizedPnl = Array.isArray(realizedPnl) ? realizedPnl : [];
+
   // Calcular PNL realizado total
-  const totalRealizedPnlBrl = realizedPnl.reduce(
-    (sum, pnl) => sum + pnl.realized_profit_brl,
+  const totalRealizedPnlBrl = safeRealizedPnl.reduce(
+    (sum, pnl) => sum + (pnl.realized_profit_brl || 0),
     0
   );
-  const totalRealizedPnlUsd = realizedPnl.reduce(
-    (sum, pnl) => sum + pnl.realized_profit_usd,
+  const totalRealizedPnlUsd = safeRealizedPnl.reduce(
+    (sum, pnl) => sum + (pnl.realized_profit_usd || 0),
     0
   );
 
   // Calcular alocação por tipo de ativo
-  const totalCostBrl = positions.reduce(
-    (sum, pos) => sum + pos.total_cost_brl,
+  const totalCostBrl = safePositions.reduce(
+    (sum, pos) => sum + (pos.total_cost_brl || 0),
     0
   );
 
@@ -34,16 +38,21 @@ const calculateDashboardSummary = (
   };
 
   if (totalCostBrl > 0) {
-    positions.forEach((position) => {
-      const percentage = (position.total_cost_brl / totalCostBrl) * 100;
-      assetAllocation[position.asset_type] += percentage;
+    safePositions.forEach((position) => {
+      const percentage = ((position.total_cost_brl || 0) / totalCostBrl) * 100;
+      if (
+        position.asset_type &&
+        assetAllocation[position.asset_type] !== undefined
+      ) {
+        assetAllocation[position.asset_type] += percentage;
+      }
     });
   }
 
   return {
     totalRealizedPnlBrl,
     totalRealizedPnlUsd,
-    totalActivePositions: positions.length,
+    totalActivePositions: safePositions.length,
     assetAllocation,
   };
 };
@@ -86,7 +95,10 @@ class DashboardService {
       );
     }
 
-    return response.json();
+    const data = await response.json();
+    console.log("API Response - Positions:", data);
+    // Garantir que sempre retornamos um array
+    return Array.isArray(data) ? data : [];
   }
 
   // Busca PNL realizado
@@ -109,7 +121,10 @@ class DashboardService {
       );
     }
 
-    return response.json();
+    const data = await response.json();
+    console.log("API Response - Realized PNL:", data);
+    // Garantir que sempre retornamos um array
+    return Array.isArray(data) ? data : [];
   }
 
   // Busca resumo do dashboard
