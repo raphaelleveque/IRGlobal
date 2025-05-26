@@ -40,6 +40,7 @@ type TransactionService interface {
 	FindByID(id string) (*Transaction, error)
 	FindAllBySymbol(userId, symbol string) ([]Transaction, error)
 	FindAllBySymbolExcludingOne(userId, symbol, transactionId string) ([]Transaction, error)
+	FindAll(userId string) ([]Transaction, error)
 }
 
 type TransactionRepository interface {
@@ -48,4 +49,5 @@ type TransactionRepository interface {
 	FindByID(id string) (*Transaction, error)
 	FindAllBySymbol(userId, symbol string) ([]Transaction, error)
 	FindAllBySymbolExcludingOne(userId, symbol, transactionId string) ([]Transaction, error)
+	FindAll(userId string) ([]Transaction, error)
 }

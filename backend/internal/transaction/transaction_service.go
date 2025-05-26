@@ -56,3 +56,7 @@ func (s *transactionService) setTotalCost(transaction *domain.Transaction) {
 	transaction.TotalCostUSD = transaction.PriceInUSD * transaction.Quantity
 	transaction.TotalCostBRL = transaction.PriceInBRL * transaction.Quantity
 }
+
+func (s *transactionService) FindAll(userId string) ([]domain.Transaction, error)  {
+	return s.repo.FindAll(userId)
+}

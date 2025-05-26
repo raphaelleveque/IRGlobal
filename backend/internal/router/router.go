@@ -56,6 +56,7 @@ func setupProtectedRoutes(router *gin.Engine, appContainer *container.AppContain
 	{
 		transaction.POST("/add", appContainer.GetTransactionHandler().AddTransaction)
 		transaction.DELETE("/delete", appContainer.GetTransactionHandler().DeleteTransaction)
+		transaction.GET("/get", appContainer.GetTransactionHandler().GetTransactions)
 	}
 
 	// Position routes

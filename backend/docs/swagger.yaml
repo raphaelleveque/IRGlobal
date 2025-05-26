@@ -486,4 +486,41 @@ paths:
       summary: Deletes a Transaction
       tags:
       - transaction
+  /transaction/get:
+    get:
+      consumes:
+      - application/json
+      description: Returns a list of transactions for a specific user.
+      parameters:
+      - description: Authentication token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of user positions
+          schema:
+            items:
+              $ref: '#/definitions/domain.Position'
+            type: array
+        "400":
+          description: Invalid data
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: List user transactions
+      tags:
+      - transaction
 swagger: "2.0"

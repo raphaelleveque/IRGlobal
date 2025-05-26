@@ -171,3 +171,33 @@ func (r *transactionRepository) FindAllBySymbolExcludingOne(userId, symbol, tran
 	}
 	return response, nil
 }
+
+
+func (r *transactionRepository) FindAll(userId string) ([]domain.Transaction, error) {
+	query := `
+		SELECT id, user_id, asset_symbol, asset_type, quantity, price_in_usd, usd_brl_rate, price_in_brl, total_cost_usd, total_cost_brl, type, operation_date, created_at
+		FROM transactions
+		WHERE user_id = $1
+		ORDER BY operation_date ASC
+	`
+	var response []domain.Transaction
+	rows, err := r.db.Query(query, userId)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var transaction domain.Transaction
+		err := rows.Scan(&transaction.ID, &transaction.UserID, &transaction.AssetSymbol, &transaction.AssetType, &transaction.Quantity, &transaction.PriceInUSD, &transaction.USDBRLRate, &transaction.PriceInBRL, &transaction.TotalCostUSD, &transaction.TotalCostBRL, &transaction.Type, &transaction.OperationDate, &transaction.CreatedAt)
+		if err != nil {
+			return nil, err
+		}
+		response = append(response, transaction)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return response, nil
+}

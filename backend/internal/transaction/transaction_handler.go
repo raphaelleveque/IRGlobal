@@ -132,3 +132,35 @@ func (h *TransactionHandler) DeleteTransaction(c *gin.Context) {
 		"pnl":         pnl,
 	})
 }
+
+
+// Register godoc
+// @Summary      List user transactions
+// @Description  Returns a list of transactions for a specific user.
+// @Tags         transaction
+// @Accept       json
+// @Produce      json
+// @Param        Authorization header string true "Authentication token"
+// @Success      200  {array}   domain.Position  "List of user positions"
+// @Failure      400  {object}  map[string]string "Invalid data"
+// @Failure      500  {object}  map[string]string "Internal server error"
+// @Router       /transaction/get [get]
+// @Security     ApiKeyAuth
+func (h *TransactionHandler) GetTransactions(c *gin.Context) {
+	user, exists := c.Get("user")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
+		return
+	}
+
+	transactions, err := h.transactionService.FindAll(user.(*domain.User).ID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"transactions": transactions,
+	})
+}
+
