@@ -42,7 +42,6 @@ export const useAuth = (): UseAuthReturn => {
     try {
       const response = await authService.register(credentials);
       setUser(response.user);
-      localStorage.setItem("authToken", response.token);
       console.log("Register successful");
     } catch (err) {
       const authError = err as AuthError;
@@ -69,7 +68,6 @@ export const useAuth = (): UseAuthReturn => {
     try {
       const response = await authService.login(credentials);
       setUser(response.user);
-      localStorage.setItem("authToken", response.token);
       console.log("Login successful");
     } catch (err) {
       const authError = err as AuthError;

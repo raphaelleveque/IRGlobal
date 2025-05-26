@@ -5,25 +5,33 @@ import type {
   RegisterCredentials,
   RegisterResponse,
 } from "../types/auth.types";
+import { appConfig, getEndpointUrl } from "../config/app.config";
 
 class AuthService {
-  private baseUrl = "http://localhost:8080"; // Configure conforme sua API
-
   async login(credentials: LoginCredentials): Promise<LoginResponse> {
     try {
-      const response = await fetch(`${this.baseUrl}/auth/login`, {
+      const url = getEndpointUrl("auth", "login");
+      const response = await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(credentials),
+        signal: AbortSignal.timeout(appConfig.api.timeout),
       });
 
       if (!response.ok) {
         throw new Error("Erro na autenticação");
       }
 
-      return await response.json();
+      const data = await response.json();
+
+      // Salvar token no localStorage
+      if (data.token) {
+        localStorage.setItem(appConfig.storage.authToken, data.token);
+      }
+
+      return data;
     } catch (error) {
       const authError: AuthError = {
         message: error instanceof Error ? error.message : "Erro desconhecido",
@@ -34,19 +42,28 @@ class AuthService {
 
   async register(credentials: RegisterCredentials): Promise<RegisterResponse> {
     try {
-      const response = await fetch(`${this.baseUrl}/auth/register`, {
+      const url = getEndpointUrl("auth", "register");
+      const response = await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(credentials),
+        signal: AbortSignal.timeout(appConfig.api.timeout),
       });
 
       if (!response.ok) {
         throw new Error("Erro na autenticação");
       }
 
-      return await response.json();
+      const data = await response.json();
+
+      // Salvar token no localStorage
+      if (data.token) {
+        localStorage.setItem(appConfig.storage.authToken, data.token);
+      }
+
+      return data;
     } catch (error) {
       const authError: AuthError = {
         message: error instanceof Error ? error.message : "Erro desconhecido",
@@ -56,12 +73,16 @@ class AuthService {
   }
 
   async logout(): Promise<void> {
-    // Implementar logout
-    localStorage.removeItem("authToken");
+    localStorage.removeItem(appConfig.storage.authToken);
+    localStorage.removeItem(appConfig.storage.refreshToken);
   }
 
   isAuthenticated(): boolean {
-    return !!localStorage.getItem("authToken");
+    return !!localStorage.getItem(appConfig.storage.authToken);
+  }
+
+  getToken(): string | null {
+    return localStorage.getItem(appConfig.storage.authToken);
   }
 }
 
