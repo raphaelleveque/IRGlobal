@@ -1,5 +1,10 @@
 import { useState } from "react";
-import type { LoginCredentials, AuthUser, AuthError } from "../types/auth.types";
+import type {
+  LoginCredentials,
+  AuthUser,
+  AuthError,
+  RegisterCredentials,
+} from "../types/auth.types";
 import { authService } from "../services/auth.service";
 import { validateLoginForm } from "../utils/validation";
 
@@ -8,6 +13,7 @@ interface UseAuthReturn {
   isLoading: boolean;
   error: string | null;
   fieldErrors: Record<string, string>;
+  register: (credentials: RegisterCredentials) => Promise<void>;
   login: (credentials: LoginCredentials) => Promise<void>;
   logout: () => void;
   clearError: () => void;
@@ -18,6 +24,33 @@ export const useAuth = (): UseAuthReturn => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+
+  const register = async (credentials: RegisterCredentials): Promise<void> => {
+    // Limpa erros anteriores
+    setError(null);
+    setFieldErrors({});
+
+    // Validação
+    const validation = validateLoginForm(credentials);
+    if (!validation.isValid) {
+      setFieldErrors(validation.errors);
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const response = await authService.register(credentials);
+      setUser(response.user);
+      localStorage.setItem("authToken", response.token);
+      console.log("Register successful");
+    } catch (err) {
+      const authError = err as AuthError;
+      setError(authError.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const login = async (credentials: LoginCredentials): Promise<void> => {
     // Limpa erros anteriores
@@ -37,7 +70,7 @@ export const useAuth = (): UseAuthReturn => {
       const response = await authService.login(credentials);
       setUser(response.user);
       localStorage.setItem("authToken", response.token);
-      console.log("Login successful")
+      console.log("Login successful");
     } catch (err) {
       const authError = err as AuthError;
       setError(authError.message);
@@ -61,6 +94,7 @@ export const useAuth = (): UseAuthReturn => {
     isLoading,
     error,
     fieldErrors,
+    register,
     login,
     logout,
     clearError,

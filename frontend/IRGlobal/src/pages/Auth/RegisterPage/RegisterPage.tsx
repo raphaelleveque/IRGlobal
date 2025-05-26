@@ -1,18 +1,18 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import type { RegisterFormData } from "../../../types/auth.types";
 import { useAuthNavigation } from "../../../hooks/useAuthNavigation";
-import { Button } from "../../../components/Button/Button";
 import { Input } from "../../../components/Input/Input";
-import type { LoginFormData } from "../../../types/auth.types";
+import { Button } from "../../../components/Button/Button";
 
-// Este é nosso componente LoginPage
-function LoginPage() {
-  const [formData, setFormData] = useState<LoginFormData>({
+function RegisterPage() {
+  const [formData, setFormData] = useState<RegisterFormData>({
+    name: "",
     email: "",
     password: "",
   });
 
-  const { isLoading, error, fieldErrors, loginWithNavigation } =
+  const { isLoading, error, fieldErrors, registerWithNavigation } =
     useAuthNavigation();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -25,7 +25,7 @@ function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    await loginWithNavigation(formData);
+    await registerWithNavigation(formData);
   };
 
   return (
@@ -33,12 +33,23 @@ function LoginPage() {
       <div className="max-w-md w-full space-y-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Faça login na sua conta
+            Cadastre-se
           </h2>
         </div>
 
         <form onSubmit={handleSubmit} className="mt-8 space-y-6">
           <div className="space-y-4">
+            <Input
+              name="name"
+              type="text"
+              label="Name"
+              placeholder="Digite seu nome"
+              value={formData.name}
+              onChange={handleInputChange}
+              error={fieldErrors.name}
+              required
+            />
+
             <Input
               name="email"
               type="email"
@@ -71,17 +82,17 @@ function LoginPage() {
             isLoading={isLoading}
             className="w-full flex justify-center py-2"
           >
-            Entrar
+            Cadastrar
           </Button>
 
           <div className="text-center">
             <p className="text-sm text-gray-600">
-              Não possui uma conta?{" "}
+              Já possui uma conta?{" "}
               <Link
-                to="/register"
+                to="/login"
                 className="font-medium text-indigo-600 hover:text-indigo-500"
               >
-                Cadastre-se
+                Faça login
               </Link>
             </p>
           </div>
@@ -91,4 +102,4 @@ function LoginPage() {
   );
 }
 
-export default LoginPage;
+export default RegisterPage;

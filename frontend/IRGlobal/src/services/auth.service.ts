@@ -2,6 +2,8 @@ import type {
   LoginCredentials,
   LoginResponse,
   AuthError,
+  RegisterCredentials,
+  RegisterResponse,
 } from "../types/auth.types";
 
 class AuthService {
@@ -9,17 +11,39 @@ class AuthService {
 
   async login(credentials: LoginCredentials): Promise<LoginResponse> {
     try {
-
       const response = await fetch(`${this.baseUrl}/auth/login`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(credentials),
       });
 
       if (!response.ok) {
-        throw new Error('Erro na autenticação');
+        throw new Error("Erro na autenticação");
+      }
+
+      return await response.json();
+    } catch (error) {
+      const authError: AuthError = {
+        message: error instanceof Error ? error.message : "Erro desconhecido",
+      };
+      throw authError;
+    }
+  }
+
+  async register(credentials: RegisterCredentials): Promise<RegisterResponse> {
+    try {
+      const response = await fetch(`${this.baseUrl}/auth/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(credentials),
+      });
+
+      if (!response.ok) {
+        throw new Error("Erro na autenticação");
       }
 
       return await response.json();
