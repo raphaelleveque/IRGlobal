@@ -97,8 +97,20 @@ class DashboardService {
 
     const data = await response.json();
     console.log("API Response - Positions:", data);
-    // Garantir que sempre retornamos um array
-    return Array.isArray(data) ? data : [];
+
+    // Verificar se a resposta tem a estrutura esperada
+    if (data && Array.isArray(data.positions)) {
+      return data.positions;
+    }
+
+    // Se a resposta for um array direto
+    if (Array.isArray(data)) {
+      return data;
+    }
+
+    // Caso contrário, retornar array vazio
+    console.warn("Formato inesperado da resposta de posições:", data);
+    return [];
   }
 
   // Busca PNL realizado
@@ -123,8 +135,25 @@ class DashboardService {
 
     const data = await response.json();
     console.log("API Response - Realized PNL:", data);
-    // Garantir que sempre retornamos um array
-    return Array.isArray(data) ? data : [];
+
+    // Verificar se a resposta tem a estrutura esperada (pnls)
+    if (data && Array.isArray(data.pnls)) {
+      return data.pnls;
+    }
+
+    // Verificar se a resposta tem a estrutura alternativa (realized_pnl)
+    if (data && Array.isArray(data.realized_pnl)) {
+      return data.realized_pnl;
+    }
+
+    // Se a resposta for um array direto
+    if (Array.isArray(data)) {
+      return data;
+    }
+
+    // Caso contrário, retornar array vazio
+    console.warn("Formato inesperado da resposta de PNL realizado:", data);
+    return [];
   }
 
   // Busca resumo do dashboard

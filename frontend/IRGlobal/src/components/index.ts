@@ -6,4 +6,5 @@ export { TabNavigation } from "./TabNavigation/TabNavigation";
 export { DashboardSummaryCards } from "./DashboardSummaryCards/DashboardSummaryCards";
 export { PositionsTable } from "./PositionsTable/PositionsTable";
 export { RealizedPnlTable } from "./RealizedPnlTable/RealizedPnlTable";
+export { TransactionsTable } from "./TransactionsTable/TransactionsTable";
 export { LoadingSpinner } from "./LoadingSpinner/LoadingSpinner";

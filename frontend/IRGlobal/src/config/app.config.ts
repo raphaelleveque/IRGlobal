@@ -11,6 +11,10 @@ export const appConfig = {
       },
       realizedPnl: "/realized-pnl/get",
       positions: "/position/get",
+      transactions: {
+        get: "/transaction/get",
+        add: "/transaction/add",
+      },
     },
   },
 

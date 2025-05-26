@@ -19,10 +19,9 @@ function PnL() {
 
   const tabs = [
     { name: "Dashboard", path: "/dashboard" },
-    { name: "Transações", path: "/dashboard/transactions" },
-    { name: "Posições", path: "/dashboard/positions" },
-    { name: "Ganhos e Perdas", path: "/dashboard/pnl" },
-    { name: "Relatórios", path: "/dashboard/reports" },
+    { name: "Transações", path: "/transactions" },
+    { name: "Posições", path: "/positions" },
+    { name: "Ganhos e Perdas", path: "/pnl" },
   ];
 
   // Calcular estatísticas
