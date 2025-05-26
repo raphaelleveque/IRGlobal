@@ -1,4 +1,3 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../../components/Button/Button";
 
@@ -10,7 +9,7 @@ function Dashboard() {
     navigate("/login");
   };
 
-  const user = JSON.parse(localStorage.getItem("authToken") || "null");
+  const token = localStorage.getItem("authToken") || "null";
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -27,7 +26,7 @@ function Dashboard() {
             <p className="text-green-800 text-sm">
               ✅ Login realizado com sucesso!
             </p>
-            {user && (
+            {token && (
               <p className="text-green-700 text-xs mt-1">
                 Token salvo no localStorage
               </p>
