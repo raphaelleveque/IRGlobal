@@ -22,7 +22,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Retorna uma lista do PNL para um usuário específico.",
+                "description": "Returns a list of PNL for a specific user.",
                 "consumes": [
                     "application/json"
                 ],
@@ -32,11 +32,11 @@ const docTemplate = `{
                 "tags": [
                     "pnl"
                 ],
-                "summary": "Lista os Ganhos e Perdas do usuário",
+                "summary": "List user Profit and Loss",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Token de autenticação",
+                        "description": "Authentication token",
                         "name": "Authorization",
                         "in": "header",
                         "required": true
@@ -44,7 +44,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Lista de pnl do usuário",
+                        "description": "List of user PNL",
                         "schema": {
                             "type": "array",
                             "items": {
@@ -53,7 +53,7 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Dados inválidos",
+                        "description": "Invalid data",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -62,7 +62,7 @@ const docTemplate = `{
                         }
                     },
                     "500": {
-                        "description": "Erro interno do servidor",
+                        "description": "Internal server error",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -203,7 +203,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Retorna uma lista de posições para um usuário específico.",
+                "description": "Returns a list of positions for a specific user.",
                 "consumes": [
                     "application/json"
                 ],
@@ -213,11 +213,11 @@ const docTemplate = `{
                 "tags": [
                     "position"
                 ],
-                "summary": "Lista as posições do usuário",
+                "summary": "List user positions",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Token de autenticação",
+                        "description": "Authentication token",
                         "name": "Authorization",
                         "in": "header",
                         "required": true
@@ -225,7 +225,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Lista de posições do usuário",
+                        "description": "List of user positions",
                         "schema": {
                             "type": "array",
                             "items": {
@@ -234,7 +234,7 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Dados inválidos",
+                        "description": "Invalid data",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -243,7 +243,7 @@ const docTemplate = `{
                         }
                     },
                     "500": {
-                        "description": "Erro interno do servidor",
+                        "description": "Internal server error",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -275,13 +275,13 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Token de autenticação",
+                        "description": "Authentication token",
                         "name": "Authorization",
                         "in": "header",
                         "required": true
                     },
                     {
-                        "description": "Dados da transação",
+                        "description": "Transaction data",
                         "name": "request",
                         "in": "body",
                         "required": true,
@@ -292,13 +292,13 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "201": {
-                        "description": "Transação criada com sucesso",
+                        "description": "Transaction created successfully",
                         "schema": {
                             "$ref": "#/definitions/domain.Transaction"
                         }
                     },
                     "400": {
-                        "description": "Dados inválidos",
+                        "description": "Invalid data",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -307,7 +307,7 @@ const docTemplate = `{
                         }
                     },
                     "500": {
-                        "description": "Erro interno do servidor",
+                        "description": "Internal server error",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -453,11 +453,11 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "asset_symbol": {
-                    "description": "Símbolo do ativo",
+                    "description": "Asset symbol",
                     "type": "string"
                 },
                 "asset_type": {
-                    "description": "Tipo de ativo",
+                    "description": "Asset type",
                     "allOf": [
                         {
                             "$ref": "#/definitions/domain.AssetType"
@@ -465,15 +465,15 @@ const docTemplate = `{
                     ]
                 },
                 "average_cost_brl": {
-                    "description": "Preço em BRL",
+                    "description": "Average cost in BRL",
                     "type": "number"
                 },
                 "average_cost_usd": {
-                    "description": "Preço em BRL",
+                    "description": "Average cost in USD",
                     "type": "number"
                 },
                 "created_at": {
-                    "description": "Data de criação",
+                    "description": "Creation date",
                     "type": "string"
                 },
                 "id": {
@@ -481,19 +481,19 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "quantity": {
-                    "description": "Quantidade",
+                    "description": "Quantity",
                     "type": "number"
                 },
                 "total_cost_brl": {
-                    "description": "Custo total em USD",
+                    "description": "Total cost in BRL",
                     "type": "number"
                 },
                 "total_cost_usd": {
-                    "description": "Custo total em USD",
+                    "description": "Total cost in USD",
                     "type": "number"
                 },
                 "user_id": {
-                    "description": "UUID do usuário",
+                    "description": "User UUID",
                     "type": "string"
                 }
             }
@@ -502,11 +502,11 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "asset_symbol": {
-                    "description": "Símbolo do ativo",
+                    "description": "Asset symbol",
                     "type": "string"
                 },
                 "asset_type": {
-                    "description": "Tipo de ativo",
+                    "description": "Asset type",
                     "allOf": [
                         {
                             "$ref": "#/definitions/domain.AssetType"
@@ -514,15 +514,15 @@ const docTemplate = `{
                     ]
                 },
                 "average_cost_brl": {
-                    "description": "Custo médio em BRL",
+                    "description": "Average cost in BRL",
                     "type": "number"
                 },
                 "average_cost_usd": {
-                    "description": "Custo médio em USD",
+                    "description": "Average cost in USD",
                     "type": "number"
                 },
                 "created_at": {
-                    "description": "Data de criação",
+                    "description": "Creation date",
                     "type": "string"
                 },
                 "id": {
@@ -530,43 +530,43 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "quantity": {
-                    "description": "Quantidade",
+                    "description": "Quantity",
                     "type": "number"
                 },
                 "realized_profit_brl": {
-                    "description": "Lucro realizado em BRL",
+                    "description": "Realized profit in BRL",
                     "type": "number"
                 },
                 "realized_profit_usd": {
-                    "description": "Lucro realizado em USD",
+                    "description": "Realized profit in USD",
                     "type": "number"
                 },
                 "selling_price_brl": {
-                    "description": "Preço de venda em BRL",
+                    "description": "Selling price in BRL",
                     "type": "number"
                 },
                 "selling_price_usd": {
-                    "description": "Preço de venda em USD",
+                    "description": "Selling price in USD",
                     "type": "number"
                 },
                 "total_cost_brl": {
-                    "description": "Custo total em BRL",
+                    "description": "Total cost in BRL",
                     "type": "number"
                 },
                 "total_cost_usd": {
-                    "description": "Custo total em USD",
+                    "description": "Total cost in USD",
                     "type": "number"
                 },
                 "total_value_sold_brl": {
-                    "description": "Valor total da venda em BRL",
+                    "description": "Total value sold in BRL",
                     "type": "number"
                 },
                 "total_value_sold_usd": {
-                    "description": "Valor total da venda em USD",
+                    "description": "Total value sold in USD",
                     "type": "number"
                 },
                 "user_id": {
-                    "description": "UUID do usuário",
+                    "description": "User UUID",
                     "type": "string"
                 }
             }
@@ -575,11 +575,11 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "asset_symbol": {
-                    "description": "Símbolo do ativo",
+                    "description": "Asset symbol",
                     "type": "string"
                 },
                 "asset_type": {
-                    "description": "Tipo de ativo",
+                    "description": "Asset type",
                     "allOf": [
                         {
                             "$ref": "#/definitions/domain.AssetType"
@@ -587,7 +587,7 @@ const docTemplate = `{
                     ]
                 },
                 "created_at": {
-                    "description": "Data de criação",
+                    "description": "Creation date",
                     "type": "string"
                 },
                 "id": {
@@ -595,31 +595,31 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "operation_date": {
-                    "description": "Data da operação",
+                    "description": "Operation date",
                     "type": "string"
                 },
                 "price_in_brl": {
-                    "description": "Preço em BRL",
+                    "description": "Price in BRL",
                     "type": "number"
                 },
                 "price_in_usd": {
-                    "description": "Preço em USD",
+                    "description": "Price in USD",
                     "type": "number"
                 },
                 "quantity": {
-                    "description": "Quantidade",
+                    "description": "Quantity",
                     "type": "number"
                 },
                 "total_cost_brl": {
-                    "description": "Custo total em USD",
+                    "description": "Total cost in BRL",
                     "type": "number"
                 },
                 "total_cost_usd": {
-                    "description": "Custo total em USD",
+                    "description": "Total cost in USD",
                     "type": "number"
                 },
                 "type": {
-                    "description": "Tipo de operação",
+                    "description": "Operation type",
                     "allOf": [
                         {
                             "$ref": "#/definitions/domain.OperationType"
@@ -627,11 +627,11 @@ const docTemplate = `{
                     ]
                 },
                 "usd_brl_rate": {
-                    "description": "Taxa de câmbio USD/BRL",
+                    "description": "USD/BRL exchange rate",
                     "type": "number"
                 },
                 "user_id": {
-                    "description": "UUID do usuário",
+                    "description": "User UUID",
                     "type": "string"
                 }
             }
@@ -665,12 +665,12 @@ const docTemplate = `{
             ],
             "properties": {
                 "asset_symbol": {
-                    "description": "Símbolo do ativo",
+                    "description": "Asset symbol",
                     "type": "string",
                     "example": "AAPL"
                 },
                 "asset_type": {
-                    "description": "Tipo de ativo",
+                    "description": "Asset type",
                     "enum": [
                         "CRYPTO",
                         "STOCK",
@@ -684,24 +684,24 @@ const docTemplate = `{
                     "example": "STOCK"
                 },
                 "operation_date": {
-                    "description": "Data da operação",
+                    "description": "Operation date",
                     "type": "string",
                     "example": "2025-02-11"
                 },
                 "price_in_usd": {
-                    "description": "Preço em USD",
+                    "description": "Price in USD",
                     "type": "number",
                     "minimum": 0,
                     "example": 50
                 },
                 "quantity": {
-                    "description": "Quantidade",
+                    "description": "Quantity",
                     "type": "number",
                     "minimum": 0,
                     "example": 20
                 },
                 "type": {
-                    "description": "Tipo de operação",
+                    "description": "Operation type",
                     "enum": [
                         "BUY",
                         "SELL"
@@ -710,7 +710,8 @@ const docTemplate = `{
                         {
                             "$ref": "#/definitions/domain.OperationType"
                         }
-                    ]
+                    ],
+                    "example": "BUY"
                 }
             }
         },

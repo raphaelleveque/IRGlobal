@@ -51,131 +51,131 @@ definitions:
   domain.Position:
     properties:
       asset_symbol:
-        description: Símbolo do ativo
+        description: Asset symbol
         type: string
       asset_type:
         allOf:
         - $ref: '#/definitions/domain.AssetType'
-        description: Tipo de ativo
+        description: Asset type
       average_cost_brl:
-        description: Preço em BRL
+        description: Average cost in BRL
         type: number
       average_cost_usd:
-        description: Preço em BRL
+        description: Average cost in USD
         type: number
       created_at:
-        description: Data de criação
+        description: Creation date
         type: string
       id:
         description: UUID
         type: string
       quantity:
-        description: Quantidade
+        description: Quantity
         type: number
       total_cost_brl:
-        description: Custo total em USD
+        description: Total cost in BRL
         type: number
       total_cost_usd:
-        description: Custo total em USD
+        description: Total cost in USD
         type: number
       user_id:
-        description: UUID do usuário
+        description: User UUID
         type: string
     type: object
   domain.RealizedPNL:
     properties:
       asset_symbol:
-        description: Símbolo do ativo
+        description: Asset symbol
         type: string
       asset_type:
         allOf:
         - $ref: '#/definitions/domain.AssetType'
-        description: Tipo de ativo
+        description: Asset type
       average_cost_brl:
-        description: Custo médio em BRL
+        description: Average cost in BRL
         type: number
       average_cost_usd:
-        description: Custo médio em USD
+        description: Average cost in USD
         type: number
       created_at:
-        description: Data de criação
+        description: Creation date
         type: string
       id:
         description: UUID
         type: string
       quantity:
-        description: Quantidade
+        description: Quantity
         type: number
       realized_profit_brl:
-        description: Lucro realizado em BRL
+        description: Realized profit in BRL
         type: number
       realized_profit_usd:
-        description: Lucro realizado em USD
+        description: Realized profit in USD
         type: number
       selling_price_brl:
-        description: Preço de venda em BRL
+        description: Selling price in BRL
         type: number
       selling_price_usd:
-        description: Preço de venda em USD
+        description: Selling price in USD
         type: number
       total_cost_brl:
-        description: Custo total em BRL
+        description: Total cost in BRL
         type: number
       total_cost_usd:
-        description: Custo total em USD
+        description: Total cost in USD
         type: number
       total_value_sold_brl:
-        description: Valor total da venda em BRL
+        description: Total value sold in BRL
         type: number
       total_value_sold_usd:
-        description: Valor total da venda em USD
+        description: Total value sold in USD
         type: number
       user_id:
-        description: UUID do usuário
+        description: User UUID
         type: string
     type: object
   domain.Transaction:
     properties:
       asset_symbol:
-        description: Símbolo do ativo
+        description: Asset symbol
         type: string
       asset_type:
         allOf:
         - $ref: '#/definitions/domain.AssetType'
-        description: Tipo de ativo
+        description: Asset type
       created_at:
-        description: Data de criação
+        description: Creation date
         type: string
       id:
         description: UUID
         type: string
       operation_date:
-        description: Data da operação
+        description: Operation date
         type: string
       price_in_brl:
-        description: Preço em BRL
+        description: Price in BRL
         type: number
       price_in_usd:
-        description: Preço em USD
+        description: Price in USD
         type: number
       quantity:
-        description: Quantidade
+        description: Quantity
         type: number
       total_cost_brl:
-        description: Custo total em USD
+        description: Total cost in BRL
         type: number
       total_cost_usd:
-        description: Custo total em USD
+        description: Total cost in USD
         type: number
       type:
         allOf:
         - $ref: '#/definitions/domain.OperationType'
-        description: Tipo de operação
+        description: Operation type
       usd_brl_rate:
-        description: Taxa de câmbio USD/BRL
+        description: USD/BRL exchange rate
         type: number
       user_id:
-        description: UUID do usuário
+        description: User UUID
         type: string
     type: object
   domain.User:
@@ -192,39 +192,40 @@ definitions:
   transaction.AddTransactionRequest:
     properties:
       asset_symbol:
-        description: Símbolo do ativo
+        description: Asset symbol
         example: AAPL
         type: string
       asset_type:
         allOf:
         - $ref: '#/definitions/domain.AssetType'
-        description: Tipo de ativo
+        description: Asset type
         enum:
         - CRYPTO
         - STOCK
         - ETF
         example: STOCK
       operation_date:
-        description: Data da operação
+        description: Operation date
         example: "2025-02-11"
         type: string
       price_in_usd:
-        description: Preço em USD
+        description: Price in USD
         example: 50
         minimum: 0
         type: number
       quantity:
-        description: Quantidade
+        description: Quantity
         example: 20
         minimum: 0
         type: number
       type:
         allOf:
         - $ref: '#/definitions/domain.OperationType'
-        description: Tipo de operação
+        description: Operation type
         enum:
         - BUY
         - SELL
+        example: BUY
     required:
     - asset_symbol
     - asset_type
@@ -252,9 +253,9 @@ paths:
     get:
       consumes:
       - application/json
-      description: Retorna uma lista do PNL para um usuário específico.
+      description: Returns a list of PNL for a specific user.
       parameters:
-      - description: Token de autenticação
+      - description: Authentication token
         in: header
         name: Authorization
         required: true
@@ -263,26 +264,26 @@ paths:
       - application/json
       responses:
         "200":
-          description: Lista de pnl do usuário
+          description: List of user PNL
           schema:
             items:
               $ref: '#/definitions/domain.RealizedPNL'
             type: array
         "400":
-          description: Dados inválidos
+          description: Invalid data
           schema:
             additionalProperties:
               type: string
             type: object
         "500":
-          description: Erro interno do servidor
+          description: Internal server error
           schema:
             additionalProperties:
               type: string
             type: object
       security:
       - ApiKeyAuth: []
-      summary: Lista os Ganhos e Perdas do usuário
+      summary: List user Profit and Loss
       tags:
       - pnl
   /auth/login:
@@ -370,9 +371,9 @@ paths:
     get:
       consumes:
       - application/json
-      description: Retorna uma lista de posições para um usuário específico.
+      description: Returns a list of positions for a specific user.
       parameters:
-      - description: Token de autenticação
+      - description: Authentication token
         in: header
         name: Authorization
         required: true
@@ -381,26 +382,26 @@ paths:
       - application/json
       responses:
         "200":
-          description: Lista de posições do usuário
+          description: List of user positions
           schema:
             items:
               $ref: '#/definitions/domain.Position'
             type: array
         "400":
-          description: Dados inválidos
+          description: Invalid data
           schema:
             additionalProperties:
               type: string
             type: object
         "500":
-          description: Erro interno do servidor
+          description: Internal server error
           schema:
             additionalProperties:
               type: string
             type: object
       security:
       - ApiKeyAuth: []
-      summary: Lista as posições do usuário
+      summary: List user positions
       tags:
       - position
   /transaction/add:
@@ -409,12 +410,12 @@ paths:
       - application/json
       description: Adiciona uma nova Transação ao sistema
       parameters:
-      - description: Token de autenticação
+      - description: Authentication token
         in: header
         name: Authorization
         required: true
         type: string
-      - description: Dados da transação
+      - description: Transaction data
         in: body
         name: request
         required: true
@@ -424,17 +425,17 @@ paths:
       - application/json
       responses:
         "201":
-          description: Transação criada com sucesso
+          description: Transaction created successfully
           schema:
             $ref: '#/definitions/domain.Transaction'
         "400":
-          description: Dados inválidos
+          description: Invalid data
           schema:
             additionalProperties:
               type: string
             type: object
         "500":
-          description: Erro interno do servidor
+          description: Internal server error
           schema:
             additionalProperties:
               type: string
