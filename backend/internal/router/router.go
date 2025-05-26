@@ -64,7 +64,7 @@ func setupProtectedRoutes(router *gin.Engine, appContainer *container.AppContain
 		position.GET("get", appContainer.GetPositionHandler().GetPositions)
 	}
 
-	pnl := protected.Group("/pnl")
+	pnl := protected.Group("/realized-pnl")
 	{
 		pnl.GET("/get", appContainer.GetRealizedPNLHandler().GetPNL)
 	}

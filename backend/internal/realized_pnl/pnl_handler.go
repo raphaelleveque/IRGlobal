@@ -25,7 +25,7 @@ func NewRealizedPNLHandler(service domain.RealizedPNLService) *RealizedPNLHandle
 // @Success      200  {array}   domain.RealizedPNL  "List of user PNL"
 // @Failure      400  {object}  map[string]string "Invalid data"
 // @Failure      500  {object}  map[string]string "Internal server error"
-// @Router       /RealizedPNL/get [get]
+// @Router       /realized-pnl/get [get]
 // @Security     ApiKeyAuth
 func (h *RealizedPNLHandler) GetPNL(c *gin.Context) {
 	user, exists := c.Get("user")
