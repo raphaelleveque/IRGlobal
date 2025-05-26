@@ -6,7 +6,7 @@ import {
   LoadingSpinner,
 } from "../../components";
 import { TabNavigation } from "../../components/TabNavigation/TabNavigation";
-import { usePositions } from "../../hooks/usePortfolio";
+import { usePositions } from "../../hooks/useDashboard";
 
 function Positions() {
   const navigate = useNavigate();
@@ -93,19 +93,19 @@ function Positions() {
 
             <div className="bg-white rounded-lg shadow-md p-6">
               <h3 className="text-sm font-medium text-gray-500 mb-2">
-                Posições Positivas
+                Posições em Crypto
               </h3>
-              <p className="text-2xl font-bold text-green-600">
-                {positions.filter((p) => p.pnl > 0).length}
+              <p className="text-2xl font-bold text-orange-600">
+                {positions.filter((p) => p.asset_type === "CRYPTO").length}
               </p>
             </div>
 
             <div className="bg-white rounded-lg shadow-md p-6">
               <h3 className="text-sm font-medium text-gray-500 mb-2">
-                Posições Negativas
+                Posições em Ações
               </h3>
-              <p className="text-2xl font-bold text-red-600">
-                {positions.filter((p) => p.pnl < 0).length}
+              <p className="text-2xl font-bold text-green-600">
+                {positions.filter((p) => p.asset_type === "STOCK").length}
               </p>
             </div>
           </div>

@@ -1,15 +1,15 @@
 import React from "react";
-import type { Position, AssetType } from "../../types/portfolio.types";
+import type { RealizedPNL, AssetType } from "../../types/portfolio.types";
 
-interface PositionsTableProps {
-  positions: Position[];
+interface RealizedPnlTableProps {
+  realizedPnl: RealizedPNL[];
   title?: string;
   showTitle?: boolean;
 }
 
-export const PositionsTable: React.FC<PositionsTableProps> = ({
-  positions,
-  title = "Posições Atuais",
+export const RealizedPnlTable: React.FC<RealizedPnlTableProps> = ({
+  realizedPnl,
+  title = "PNL Realizado",
   showTitle = true,
 }) => {
   const formatCurrency = (value: number, currency: "BRL" | "USD" = "BRL") => {
@@ -18,6 +18,10 @@ export const PositionsTable: React.FC<PositionsTableProps> = ({
       currency,
       minimumFractionDigits: 2,
     });
+  };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString("pt-BR");
   };
 
   const getAssetTypeLabel = (type: AssetType) => {
@@ -38,7 +42,7 @@ export const PositionsTable: React.FC<PositionsTableProps> = ({
     return colors[type];
   };
 
-  if (positions.length === 0) {
+  if (realizedPnl.length === 0) {
     return (
       <div className="bg-white rounded-lg shadow-md p-6">
         {showTitle && (
@@ -47,7 +51,7 @@ export const PositionsTable: React.FC<PositionsTableProps> = ({
           </div>
         )}
         <div className="text-center py-8">
-          <p className="text-gray-500">Nenhuma posição encontrada</p>
+          <p className="text-gray-500">Nenhum PNL realizado encontrado</p>
         </div>
       </div>
     );
@@ -74,48 +78,66 @@ export const PositionsTable: React.FC<PositionsTableProps> = ({
                 Quantidade
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Preço Médio (BRL)
+                Preço de Venda (BRL)
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Preço Médio (USD)
+                Preço de Venda (USD)
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Custo Total (BRL)
+                Lucro (BRL)
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Custo Total (USD)
+                Lucro (USD)
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Data
               </th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {positions.map((position) => (
-              <tr key={position.id} className="hover:bg-gray-50">
+            {realizedPnl.map((pnl) => (
+              <tr key={pnl.id} className="hover:bg-gray-50">
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                  {position.asset_symbol}
+                  {pnl.asset_symbol}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span
                     className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getAssetTypeBadgeColor(
-                      position.asset_type
+                      pnl.asset_type
                     )}`}
                   >
-                    {getAssetTypeLabel(position.asset_type)}
+                    {getAssetTypeLabel(pnl.asset_type)}
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {position.quantity.toLocaleString()}
+                  {pnl.quantity.toLocaleString()}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {formatCurrency(position.average_cost_brl, "BRL")}
+                  {formatCurrency(pnl.selling_price_brl, "BRL")}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {formatCurrency(position.average_cost_usd, "USD")}
+                  {formatCurrency(pnl.selling_price_usd, "USD")}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
-                  {formatCurrency(position.total_cost_brl, "BRL")}
+                <td
+                  className={`px-6 py-4 whitespace-nowrap text-sm font-medium ${
+                    pnl.realized_profit_brl >= 0
+                      ? "text-green-600"
+                      : "text-red-600"
+                  }`}
+                >
+                  {formatCurrency(pnl.realized_profit_brl, "BRL")}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
-                  {formatCurrency(position.total_cost_usd, "USD")}
+                <td
+                  className={`px-6 py-4 whitespace-nowrap text-sm font-medium ${
+                    pnl.realized_profit_usd >= 0
+                      ? "text-green-600"
+                      : "text-red-600"
+                  }`}
+                >
+                  {formatCurrency(pnl.realized_profit_usd, "USD")}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {formatDate(pnl.created_at)}
                 </td>
               </tr>
             ))}

@@ -3,6 +3,7 @@ export { Input } from "./Input/Input";
 export { Logo } from "./Logo/Logo";
 export { Layout } from "./Layout/Layout";
 export { TabNavigation } from "./TabNavigation/TabNavigation";
-export { PortfolioSummaryCards } from "./PortfolioSummaryCards/PortfolioSummaryCards";
+export { DashboardSummaryCards } from "./DashboardSummaryCards/DashboardSummaryCards";
 export { PositionsTable } from "./PositionsTable/PositionsTable";
+export { RealizedPnlTable } from "./RealizedPnlTable/RealizedPnlTable";
 export { LoadingSpinner } from "./LoadingSpinner/LoadingSpinner";

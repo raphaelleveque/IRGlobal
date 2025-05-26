@@ -2,16 +2,18 @@ import { useNavigate } from "react-router-dom";
 import {
   Layout,
   Button,
-  PortfolioSummaryCards,
+  DashboardSummaryCards,
   PositionsTable,
+  RealizedPnlTable,
   LoadingSpinner,
 } from "../../components";
 import { TabNavigation } from "../../components/TabNavigation/TabNavigation";
-import { usePortfolio } from "../../hooks/usePortfolio";
+import { useDashboard } from "../../hooks/useDashboard";
 
 function Dashboard() {
   const navigate = useNavigate();
-  const { summary, positions, isLoading, error, refetch } = usePortfolio();
+  const { summary, positions, realizedPnl, isLoading, error, refetch } =
+    useDashboard();
 
   const handleLogout = () => {
     localStorage.removeItem("authToken");
@@ -31,7 +33,7 @@ function Dashboard() {
     return (
       <Layout>
         <TabNavigation tabs={tabs} />
-        <LoadingSpinner size="lg" message="Carregando dados do portfolio..." />
+        <LoadingSpinner size="lg" message="Carregando dados do dashboard..." />
       </Layout>
     );
   }
@@ -91,13 +93,18 @@ function Dashboard() {
             </div>
           </div>
 
-          {/* Cards de resumo PNL */}
+          {/* Cards de resumo do Dashboard */}
           <div className="mb-8">
-            <PortfolioSummaryCards summary={summary} />
+            <DashboardSummaryCards summary={summary} />
           </div>
 
           {/* Tabela de posições */}
-          <PositionsTable positions={positions} />
+          <div className="mb-8">
+            <PositionsTable positions={positions} />
+          </div>
+
+          {/* Tabela de PNL realizado */}
+          <RealizedPnlTable realizedPnl={realizedPnl} />
         </div>
       </div>
     </Layout>
