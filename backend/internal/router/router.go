@@ -14,7 +14,7 @@ func SetupRoutes(appContainer *container.AppContainer) *gin.Engine {
 	// Swagger
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	// Rotas públicas (não necessitam de autenticação)
+	// Public routes (do not require authentication)
 	setupAuthRoutes(router, appContainer)
 
 	// Rotas protegidas (necessitam de autenticação)
@@ -38,14 +38,14 @@ func setupProtectedRoutes(router *gin.Engine, appContainer *container.AppContain
 	protected := router.Group("/")
 	protected.Use(auth.AuthMiddleware(appContainer.GetAuthService()))
 
-	// Rotas de transação protegidas
+	// Protected transaction routes
 	transaction := protected.Group("/transaction")
 	{
 		transaction.POST("/add", appContainer.GetTransactionHandler().AddTransaction)
 		transaction.DELETE("/delete", appContainer.GetTransactionHandler().DeleteTransaction)
 	}
 
-	// Rotas de posição
+	// Position routes
 	position := protected.Group("/position")
 	{
 		position.GET("get", appContainer.GetPositionHandler().GetPositions)

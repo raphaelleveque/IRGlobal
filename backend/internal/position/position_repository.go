@@ -71,22 +71,22 @@ func (r *positionRepository) GetPositions(user_id string) ([]domain.Position, er
 			&position.TotalCostUSD,
 			&position.TotalCostBRL,
 			&position.CreatedAt,
-		)	
+		)
 		if err != nil {
 			return nil, err
 		}
 		positions = append(positions, position)
 	}
-	
+
 	if err := rows.Err(); err != nil {
 		return nil, err
 	}
-	
+
 	return positions, nil
 }
 
 func (r *positionRepository) UpdatePosition(position *domain.Position, dbTx domain.DBTx) (*domain.Position, error) {
-	// UPSERT: UPDATE se existir, INSERT se não existir
+	// UPSERT: UPDATE if exists, INSERT if not
 	query := `
 		INSERT INTO positions (user_id, asset_symbol, asset_type, quantity, average_cost_usd, average_cost_brl, total_cost_usd, total_cost_brl)
 		VALUES ($1, $2, $3, $4, $5, $6, $7, $8)

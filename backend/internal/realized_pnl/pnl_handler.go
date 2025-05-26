@@ -16,15 +16,15 @@ func NewRealizedPNLHandler(service domain.RealizedPNLService) *RealizedPNLHandle
 }
 
 // Register godoc
-// @Summary      Lista os Ganhos e Perdas do usuário
-// @Description  Retorna uma lista do PNL para um usuário específico.
+// @Summary      List user Profit and Loss
+// @Description  Returns a list of PNL for a specific user.
 // @Tags         pnl
 // @Accept       json
 // @Produce      json
-// @Param        Authorization header string true "Token de autenticação"
-// @Success      200  {array}   domain.RealizedPNL  "Lista de pnl do usuário"
-// @Failure      400  {object}  map[string]string "Dados inválidos"
-// @Failure      500  {object}  map[string]string "Erro interno do servidor"
+// @Param        Authorization header string true "Authentication token"
+// @Success      200  {array}   domain.RealizedPNL  "List of user PNL"
+// @Failure      400  {object}  map[string]string "Invalid data"
+// @Failure      500  {object}  map[string]string "Internal server error"
 // @Router       /RealizedPNL/get [get]
 // @Security     ApiKeyAuth
 func (h *RealizedPNLHandler) GetPNL(c *gin.Context) {

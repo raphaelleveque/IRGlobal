@@ -15,12 +15,12 @@ type TransactionHandler struct {
 }
 
 type AddTransactionRequest struct {
-	AssetSymbol   string               `json:"asset_symbol" binding:"required" example:"AAPL"`                       // Símbolo do ativo
-	AssetType     domain.AssetType     `json:"asset_type" binding:"required,oneof=CRYPTO STOCK ETF" example:"STOCK"` // Tipo de ativo
-	Quantity      float64              `json:"quantity" binding:"required,min=0" example:"20"`                       // Quantidade
-	PriceInUSD    float64              `json:"price_in_usd" binding:"required,min=0" example:"50"`                   // Preço em USD
-	Type          domain.OperationType `json:"type" binding:"required,oneof=BUY SELL"`                               // Tipo de operação
-	OperationDate string               `json:"operation_date" binding:"required" example:"2025-02-11"`               // Data da operação
+	AssetSymbol   string               `json:"asset_symbol" binding:"required" example:"AAPL"`                       // Asset symbol
+	AssetType     domain.AssetType     `json:"asset_type" binding:"required,oneof=CRYPTO STOCK ETF" example:"STOCK"` // Asset type
+	Quantity      float64              `json:"quantity" binding:"required,min=0" example:"20"`                       // Quantity
+	PriceInUSD    float64              `json:"price_in_usd" binding:"required,min=0" example:"50"`                   // Price in USD
+	Type          domain.OperationType `json:"type" binding:"required,oneof=BUY SELL" example:"BUY"`                 // Operation type
+	OperationDate string               `json:"operation_date" binding:"required" example:"2025-02-11"`               // Operation date
 }
 
 type DeleteTransactionRequest struct {
@@ -40,11 +40,11 @@ func NewTransactionHandler(transactionService domain.TransactionService, orchest
 // @Tags         transaction
 // @Accept       json
 // @Produce      json
-// @Param        Authorization header string true "Token de autenticação"
-// @Param        request body AddTransactionRequest true "Dados da transação"
-// @Success      201  {object}  domain.Transaction  "Transação criada com sucesso"
-// @Failure      400  {object}  map[string]string    "Dados inválidos"
-// @Failure      500  {object}  map[string]string    "Erro interno do servidor"
+// @Param        Authorization header string true "Authentication token"
+// @Param        request body AddTransactionRequest true "Transaction data"
+// @Success      201  {object}  domain.Transaction  "Transaction created successfully"
+// @Failure      400  {object}  map[string]string    "Invalid data"
+// @Failure      500  {object}  map[string]string    "Internal server error"
 // @Router       /transaction/add [post]
 // @Security     ApiKeyAuth
 func (h *TransactionHandler) AddTransaction(c *gin.Context) {

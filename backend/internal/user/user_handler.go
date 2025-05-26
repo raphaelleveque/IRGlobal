@@ -4,7 +4,7 @@ import (
 	"github.com/raphaelleveque/IRGlobal/backend/internal/domain"
 )
 
-// UserHandler gerencia operações relacionadas ao usuário após autenticação
+// UserHandler manages user-related operations after authentication
 type UserHandler struct {
 	userService domain.UserService
 }
@@ -13,4 +13,4 @@ func NewUserHandler(userService domain.UserService) *UserHandler {
 	return &UserHandler{userService: userService}
 }
 
-// Funcionalidades CRUD de usuário serão adicionadas posteriormente
+// User CRUD functionalities will be added later

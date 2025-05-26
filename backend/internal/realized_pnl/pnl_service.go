@@ -29,14 +29,14 @@ func (s *realizedPNLService) CalculatePNL(transaction *domain.Transaction, posit
 		}
 	}
 
-	// Calcular usando a quantidade anterior
+	// Calculate using the previous quantity
 	pnl.AverageCostUSD, pnl.AverageCostBRL = s.setAverageCost(position)
 	pnl.SellingPriceUSD, pnl.SellingPriceBRL = s.setSellingPrice(transaction, pnl)
 
-	// Atualizar a quantidade após os cálculos de média
+	// Update quantity after average calculations
 	pnl.Quantity = s.setQuantity(transaction, pnl)
 
-	// Calcular valores totais com a nova quantidade
+	// Calculate total values with the new quantity
 	pnl.TotalCostUSD, pnl.TotalCostBRL = s.setTotalCost(pnl)
 	pnl.TotalValueSoldUSD, pnl.TotalValueSoldBRL = s.setTotalValueSold(pnl)
 	pnl.RealizedProfitUSD, pnl.RealizedProfitBRL = s.setRealizedProfit(pnl)
@@ -116,8 +116,8 @@ func (s *realizedPNLService) setRealizedProfit(pnl *domain.RealizedPNL) (Realize
 	return realizedProfitUSD, realizedProfitBRL
 }
 
-// calculateAverageCostAtSell calcula o custo médio da posição no momento de uma venda específica
-// Processa apenas as compras (BUY) que ocorreram antes desta venda
+// calculateAverageCostAtSell calculates the average cost of the position at the time of a specific sale
+// Processes only the purchases (BUY) that occurred before this sale
 func (s *realizedPNLService) calculateAverageCostAtSell(allTransactions []domain.Transaction, sellTransaction domain.Transaction) (float64, float64) {
 	var totalQuantity float64
 	var totalCostUSD float64

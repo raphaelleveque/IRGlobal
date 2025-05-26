@@ -9,10 +9,11 @@ import (
 )
 
 type contextKey string
+
 const userCtxKey contextKey = "user"
 
 func AuthMiddleware(authService domain.AuthService) gin.HandlerFunc {
-	return func (c *gin.Context)  {
+	return func(c *gin.Context) {
 		// 1. Lê o header Authorization
 		authHeader := c.GetHeader("Authorization")
 		if authHeader == "" {
@@ -35,10 +36,10 @@ func AuthMiddleware(authService domain.AuthService) gin.HandlerFunc {
 			return
 		}
 
-		// 4. Guarda o usuário autenticado no contexto da requisição
-        c.Set(string(userCtxKey), user)
+		// 4. Store the authenticated user in the request context
+		c.Set(string(userCtxKey), user)
 
 		// 5. Continua o fluxo da requisição
-        c.Next()
+		c.Next()
 	}
 }

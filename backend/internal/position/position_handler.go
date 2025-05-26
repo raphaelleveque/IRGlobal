@@ -16,15 +16,15 @@ func NewPositionHandler(positionService domain.PositionService) *PositionHandler
 }
 
 // Register godoc
-// @Summary      Lista as posições do usuário
-// @Description  Retorna uma lista de posições para um usuário específico.
+// @Summary      List user positions
+// @Description  Returns a list of positions for a specific user.
 // @Tags         position
 // @Accept       json
 // @Produce      json
-// @Param        Authorization header string true "Token de autenticação"
-// @Success      200  {array}   domain.Position  "Lista de posições do usuário"
-// @Failure      400  {object}  map[string]string "Dados inválidos"
-// @Failure      500  {object}  map[string]string "Erro interno do servidor"
+// @Param        Authorization header string true "Authentication token"
+// @Success      200  {array}   domain.Position  "List of user positions"
+// @Failure      400  {object}  map[string]string "Invalid data"
+// @Failure      500  {object}  map[string]string "Internal server error"
 // @Router       /position/get [get]
 // @Security     ApiKeyAuth
 func (h *PositionHandler) GetPositions(c *gin.Context) {

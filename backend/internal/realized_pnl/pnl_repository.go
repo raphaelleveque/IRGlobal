@@ -16,7 +16,7 @@ func NewRealizedPNLRepository(db *sql.DB) domain.RealizedPNLRepository {
 }
 
 func (r *realizedPNLRepository) UpdatePNL(pnl *domain.RealizedPNL, dbTx domain.DBTx) (*domain.RealizedPNL, error) {
-	// UPSERT: UPDATE se existir, INSERT se não existir
+	// UPSERT: UPDATE if exists, INSERT if not
 	query := `
 		INSERT INTO realized_pnl (user_id, asset_symbol, asset_type, quantity, average_cost_usd, average_cost_brl, total_cost_usd, total_cost_brl, selling_price_usd, selling_price_brl, total_value_sold_usd, total_value_sold_brl, realized_profit_usd, realized_profit_brl)
 		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
@@ -218,4 +218,3 @@ func (r *realizedPNLRepository) GetPNLs(userId string) ([]domain.RealizedPNL, er
 	}
 	return pnls, nil
 }
-
