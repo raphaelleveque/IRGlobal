@@ -1,11 +1,9 @@
+import LoginPage from "./pages/Auth/LoginPage/LoginPage";
 
 function App() {
   return (
-    <div>
-      <h1 className="text-3xl font-bold underline">Olá, Mundo React!</h1>
-      <p>Este é o meu primeiro componente React.</p>
-    </div>
+    <LoginPage></LoginPage>
   );
 }
 
-export default App
+export default App;
