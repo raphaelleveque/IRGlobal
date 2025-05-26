@@ -30,7 +30,7 @@ function RegisterPage() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-[calc(100vh-120px)] px-4 sm:px-6 lg:px-8 relative">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 sm:px-6 lg:px-8 relative">
       <div
         className="absolute top-0 left-0 right-0 flex justify-center"
         style={{ top: "calc(50% - 300px)" }}
