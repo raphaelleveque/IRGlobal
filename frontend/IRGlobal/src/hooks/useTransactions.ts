@@ -84,3 +84,42 @@ export const useAddTransaction = (): UseAddTransactionReturn => {
     clearError,
   };
 };
+
+interface UseDeleteTransactionReturn {
+  isLoading: boolean;
+  error: string | null;
+  deleteTransaction: (transactionId: string) => Promise<boolean>;
+  clearError: () => void;
+}
+
+export const useDeleteTransaction = (): UseDeleteTransactionReturn => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const deleteTransaction = async (transactionId: string): Promise<boolean> => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      await transactionService.deleteTransaction(transactionId);
+      return true;
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Erro ao deletar transação"
+      );
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const clearError = () => {
+    setError(null);
+  };
+
+  return {
+    isLoading,
+    error,
+    deleteTransaction,
+    clearError,
+  };
+};

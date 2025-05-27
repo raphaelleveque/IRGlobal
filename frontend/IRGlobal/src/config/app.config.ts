@@ -14,6 +14,7 @@ export const appConfig = {
       transactions: {
         get: "/transaction/get",
         add: "/transaction/add",
+        delete: "/transaction/delete",
       },
     },
   },

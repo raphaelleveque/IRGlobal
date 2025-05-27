@@ -8,3 +8,5 @@ export { PositionsTable } from "./PositionsTable/PositionsTable";
 export { RealizedPnlTable } from "./RealizedPnlTable/RealizedPnlTable";
 export { TransactionsTable } from "./TransactionsTable/TransactionsTable";
 export { LoadingSpinner } from "./LoadingSpinner/LoadingSpinner";
+export { Modal } from "./Modal/Modal";
+export { ConfirmDeleteModal } from "./ConfirmDeleteModal/ConfirmDeleteModal";

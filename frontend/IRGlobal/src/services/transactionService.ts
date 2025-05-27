@@ -61,7 +61,7 @@ class TransactionService {
   }
 
   // Deleta uma transação
-  async deleteTransaction(transactionId: string): Promise<void> {
+  async deleteTransaction(transactionId: string): Promise<Transaction> {
     const token = localStorage.getItem(appConfig.storage.authToken);
     const url = getEndpointUrl("transactions", "delete");
 
@@ -80,6 +80,9 @@ class TransactionService {
         `Erro ao deletar transação: ${response.status} ${response.statusText}`
       );
     }
+
+    // Retorna a transação deletada (mesmo que não usemos)
+    return response.json();
   }
 }
 

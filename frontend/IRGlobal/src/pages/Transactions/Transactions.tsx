@@ -6,11 +6,15 @@ import {
   TabNavigation,
 } from "../../components";
 import { TransactionsTable } from "../../components/TransactionsTable/TransactionsTable";
-import { useTransactions } from "../../hooks/useTransactions";
+import {
+  useTransactions,
+  useDeleteTransaction,
+} from "../../hooks/useTransactions";
 
 function Transactions() {
   const navigate = useNavigate();
   const { transactions, isLoading, error, refetch } = useTransactions();
+  const { deleteTransaction } = useDeleteTransaction();
 
   const tabs = [
     { name: "Dashboard", path: "/dashboard" },
@@ -22,6 +26,14 @@ function Transactions() {
 
   const handleAddTransaction = () => {
     navigate("/transactions/add");
+  };
+
+  const handleDeleteTransaction = async (transactionId: string) => {
+    const success = await deleteTransaction(transactionId);
+    if (success) {
+      // Recarregar a lista de transações após deletar
+      await refetch();
+    }
   };
 
   if (isLoading) {
@@ -101,7 +113,10 @@ function Transactions() {
           </div>
 
           {/* Transactions Table */}
-          <TransactionsTable transactions={transactions} />
+          <TransactionsTable
+            transactions={transactions}
+            onDeleteTransaction={handleDeleteTransaction}
+          />
         </div>
       </div>
     </Layout>
