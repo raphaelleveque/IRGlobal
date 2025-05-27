@@ -1,0 +1,28 @@
+# fly.toml app configuration file generated for irglobal-frontend on 2025-05-27T09:49:22-03:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'irglobal-frontend'
+primary_region = 'gru'
+
+# --- INÍCIO DAS ALTERAÇÕES ---
+
+[build]
+  context = "."          # Agora o contexto é a pasta atual (frontend/IRGlobal)
+  dockerfile = "Dockerfile" # O Dockerfile está na pasta atual
+
+[http_service]
+  internal_port = 80     # Seu Nginx no container escuta na porta 80
+  force_https = true
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ['app']
+
+# --- FIM DAS ALTERAÇÕES ---
+
+[[vm]]
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1
