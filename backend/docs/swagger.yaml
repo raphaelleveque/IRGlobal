@@ -242,7 +242,6 @@ definitions:
     required:
     - id
     type: object
-host: localhost:8080
 info:
   contact: {}
   description: API para o sistema IRGlobal
@@ -523,4 +522,7 @@ paths:
       summary: List user transactions
       tags:
       - transaction
+schemes:
+- http
+- https
 swagger: "2.0"

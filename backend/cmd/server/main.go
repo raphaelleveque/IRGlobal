@@ -14,7 +14,7 @@ import (
 // @title           IRGlobal API
 // @version         1.0
 // @description     API para o sistema IRGlobal
-// @host      localhost:8080
+// @schemes http https
 // @BasePath  /
 
 func main() {
