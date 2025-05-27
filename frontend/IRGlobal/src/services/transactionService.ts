@@ -5,6 +5,7 @@ import type {
   AddTransactionResponse,
 } from "../types/transaction.types";
 import { appConfig, getEndpointUrl } from "../config/app.config";
+import { handleApiError } from "../utils/apiError";
 
 class TransactionService {
   // Busca todas as transações
@@ -22,9 +23,7 @@ class TransactionService {
     });
 
     if (!response.ok) {
-      throw new Error(
-        `Erro ao buscar transações: ${response.status} ${response.statusText}`
-      );
+      await handleApiError(response, "Erro ao buscar transações");
     }
 
     const data: TransactionResponse = await response.json();
@@ -52,9 +51,12 @@ class TransactionService {
     });
 
     if (!response.ok) {
-      throw new Error(
-        `Erro ao adicionar transação: ${response.status} ${response.statusText}`
+      console.log(
+        "Transaction API Error - Status:",
+        response.status,
+        response.statusText
       );
+      await handleApiError(response, "Erro ao adicionar transação");
     }
 
     return response.json();
@@ -76,9 +78,7 @@ class TransactionService {
     });
 
     if (!response.ok) {
-      throw new Error(
-        `Erro ao deletar transação: ${response.status} ${response.statusText}`
-      );
+      await handleApiError(response, "Erro ao deletar transação");
     }
 
     // Retorna a transação deletada (mesmo que não usemos)

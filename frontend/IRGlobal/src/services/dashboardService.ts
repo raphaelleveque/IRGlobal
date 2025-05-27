@@ -5,6 +5,7 @@ import type {
   DashboardSummary,
 } from "../types/portfolio.types";
 import { appConfig, getEndpointUrl } from "../config/app.config";
+import { handleApiError } from "../utils/apiError";
 
 // Função para calcular o resumo do dashboard baseado nas posições e PNL realizado
 const calculateDashboardSummary = (
@@ -90,9 +91,7 @@ class DashboardService {
     });
 
     if (!response.ok) {
-      throw new Error(
-        `Erro ao buscar posições: ${response.status} ${response.statusText}`
-      );
+      await handleApiError(response, "Erro ao buscar posições");
     }
 
     const data = await response.json();
@@ -128,9 +127,7 @@ class DashboardService {
     });
 
     if (!response.ok) {
-      throw new Error(
-        `Erro ao buscar PNL realizado: ${response.status} ${response.statusText}`
-      );
+      await handleApiError(response, "Erro ao buscar PNL realizado");
     }
 
     const data = await response.json();

@@ -6,6 +6,7 @@ import type {
   RegisterResponse,
 } from "../types/auth.types";
 import { appConfig, getEndpointUrl } from "../config/app.config";
+import { extractErrorMessage } from "../utils/apiError";
 
 class AuthService {
   async login(credentials: LoginCredentials): Promise<LoginResponse> {
@@ -21,7 +22,8 @@ class AuthService {
       });
 
       if (!response.ok) {
-        throw new Error("Erro na autenticação");
+        const errorMessage = await extractErrorMessage(response);
+        throw new Error(`Erro no login: ${errorMessage}`);
       }
 
       const data = await response.json();
@@ -53,7 +55,8 @@ class AuthService {
       });
 
       if (!response.ok) {
-        throw new Error("Erro na autenticação");
+        const errorMessage = await extractErrorMessage(response);
+        throw new Error(`Erro no registro: ${errorMessage}`);
       }
 
       const data = await response.json();
