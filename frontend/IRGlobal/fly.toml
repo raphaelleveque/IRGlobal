@@ -6,21 +6,18 @@
 app = 'irglobal-frontend'
 primary_region = 'gru'
 
-# --- INÍCIO DAS ALTERAÇÕES ---
-
 [build]
-  context = "."          # Agora o contexto é a pasta atual (frontend/IRGlobal)
-  dockerfile = "Dockerfile" # O Dockerfile está na pasta atual
+  context = "."
+  dockerfile = "Dockerfile"
+  args = {VITE_API_BASE_URL = "https://irglobal-backend.fly.dev", VITE_API_TIMEOUT = "10000"}
 
 [http_service]
-  internal_port = 80     # Seu Nginx no container escuta na porta 80
+  internal_port = 80
   force_https = true
   auto_stop_machines = 'stop'
   auto_start_machines = true
   min_machines_running = 0
   processes = ['app']
-
-# --- FIM DAS ALTERAÇÕES ---
 
 [[vm]]
   memory = '1gb'

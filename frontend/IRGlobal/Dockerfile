@@ -3,6 +3,10 @@ FROM node:18-alpine AS builder
 
 WORKDIR /app
 
+# Declare build arguments que serão passados de fora
+ARG VITE_API_BASE_URL
+ARG VITE_API_TIMEOUT # Se você também quiser passar o timeout
+
 # Copy package files
 COPY package.json package-lock.json ./
 
@@ -12,8 +16,7 @@ RUN npm ci
 # Copy source code
 COPY . .
 
-# Build the application
-RUN npm run build
+RUN VITE_API_BASE_URL=$VITE_API_BASE_URL VITE_API_TIMEOUT=$VITE_API_TIMEOUT npm run build
 
 # Production stage
 FROM nginx:alpine
@@ -27,4 +30,4 @@ COPY nginx.conf /etc/nginx/nginx.conf
 # Expose port 80
 EXPOSE 80
 
-CMD ["nginx", "-g", "daemon off;"] 
+CMD ["nginx", "-g", "daemon off;"]
